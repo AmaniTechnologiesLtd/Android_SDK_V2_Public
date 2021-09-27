@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/dialog"
+    android:background="@drawable/rounded_shadow"
+    android:layout_gravity="center"
+    android:layout_height="310dp">
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="28dp"
+        android:src="@drawable/warning"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/ubuntu_medium"
+        android:text="Kimliğini okuyamadık"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/dialog_desc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        app:layout_constraintVertical_bias="0.461" />
+
+    <TextView
+        android:id="@+id/dialog_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/ubuntu_regular"
+        android:visibility="visible"
+        android:gravity="center_horizontal"
+        android:lineHeight="@dimen/dp_22"
+        android:lineSpacingExtra="7sp"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/dialogConfirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Kimliğini yeterince telefonuna yaklaştırmamış ya da yeterince uzun süre yakın tutmamış olabilirsin. Lütfen yeniden dene." />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/dialogConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bttn_primary"
+        android:fontFamily="@font/ubuntu_bold"
+        android:text="Tamam"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.appcompat.widget.AppCompatButton>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

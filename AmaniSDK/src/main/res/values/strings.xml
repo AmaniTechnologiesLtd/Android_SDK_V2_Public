@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">sdk</string>
+    <string name="id_scan_title">Kimlik Kartı Tarama</string>
+    <string name="id_scan_ready">Kimliğin taramaya hazır!</string>
+    <string name="id_scan_ready_desc">Lütfen şimdi T.C. Kimlik kartını telefonunun arkasına yaklaştır ve okuma gerçekleşene kadar oynatmadan tut.</string>
+    <string name="cancel_button_text">Vazgeç</string>
+    <string name="tl_text">Başka bir bankada kendi adına bir hesabın varsa “Devam” ederek kimliğinin ön ve arka yüzlerinin fotoğraflarını çekerek ilerleyebilirsin.</string>
+    <string name="package_text">Başka bir bankada kendi adına bir hesabın yoksa, kuryemiz seni adresinde ziyaret edebilir.</string>
+    <string name="selfie_desc">Lütfen yüzünün aydınlanmış olduğundan emin ol.</string>
+    <string name="id_desc">Kimliğin okunabilir olduğundan emin ol.</string>
+    <string name="selfie_title">Biyometrik Doğrulama</string>
+    <string name="selfie_confirm_text">Fotoğrafını onayla</string>
+    <string name="id_confirm_text">Ön yüzü onayla</string>
+    <string name="title_id_card_scan">Kimlik Kartı Tarama</string>
+    <string name="title_id_scan">Kimlik Tarama</string>
+    <string name="id_scan_error_text">Kimliğin taranırken bir hata oluştu.</string>
+    <string name="id_front_confirm_text">Ön yüzü onayla</string>
+    <string name="id_back_confirm_text">Arka yüzü onayla</string>
+    <string name="front_side_photo">Ön Yüz Fotoğrafı</string>
+    <string name="front_side">Arka Yüz Fotoğrafı</string>
+    <string name="choose_id_type">Kimlik Türü Seç</string>
+    <string name="biometric_verification">Biyometrik Doğrulama</string>
+    <string name="id_try_again">Kimlik fotoğraflarını yeniden çek</string>
+    <string name="id_try_again_desc">Kimilik fotoğraflarında bir hata tespit ettik. Lütfen yeniden dene.</string>
+    <string name="selfie_try_again">Selfie fotoğraflarını yeniden çek</string>
+    <string name="selfie_try_again_desc">Selfie fotoğraflarında bir hata tespit ettik. Lütfen yeniden dene.</string>
+
+
+</resources>

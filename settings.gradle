@@ -1,0 +1,3 @@
+include ':AmaniSDK'
+include ':app'
+rootProject.name = "AmaniSampleUI"

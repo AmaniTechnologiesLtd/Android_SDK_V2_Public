@@ -1,0 +1,38 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <!--<item name="android:fontFamily">@font/medium</item>-->
+        <item name="colorControlNormal">@color/color_white</item>
+    </style>
+    <style name="IdLoader" parent="android:Theme.Material.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+
+    <!--<style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.DialogFragment">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_shadow</item>
+    </style>-->
+
+    <style name="BottomSheetTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyle</item>
+    </style>
+
+    <style name="bottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_shadow</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradiant_toolbar"
+    tools:context="com.amani.sdk.ui.NFCScanActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="78dp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded"
+        android:gravity="center_horizontal"
+        >
+
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="19dp"
+                android:lineHeight="32sp"
+                android:gravity="center"
+                android:textColor="@color/dark"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="@string/id_scan_ready"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="19dp"
+                android:lineHeight="24sp"
+                android:lineSpacingExtra="9sp"
+                android:textColor="@color/dark"
+                android:fontFamily="@font/ubuntu_regular"
+                android:text="@string/id_scan_ready_desc"
+                android:textAlignment="center"
+                android:textSize="15sp" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <ImageView
+                    android:layout_width="100dp"
+                    android:id="@+id/id_card"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_card"
+                    android:layout_marginTop="20dp"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    >
+                </ImageView>
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/nfc_animation"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_200"
+                    app:lottie_url="REPLACE_JSON_URL"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    android:visibility="gone"
+                    app:lottie_rawRes="@raw/nfc_animation"
+                    android:layout_gravity="center"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="#ffffff" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_nfc_cancel"
+            android:layout_width="match_parent"
+            android:textColor="@color/lightGray"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
+            android:background="@drawable/bttn_secondary"
+            android:layout_marginBottom="25dp"
+            android:text="@string/cancel_button_text"
+            android:textAllCaps="false">
+
+        </androidx.appcompat.widget.AppCompatButton>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="308dp"
+        android:id="@+id/alert_box_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal">
+
+
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/bottom_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/toolbar_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_nfc"
+            android:layout_width="match_parent"
+            android:layout_height="78dp"
+            android:background="@android:color/transparent"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/tool_barback"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_arrow" />
+
+                <TextView
+                    android:id="@+id/title_toolbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/ubuntu_regular"
+                    android:gravity="center"
+                    android:text="Kimlik Kartı Tarama"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/amani_blue"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
