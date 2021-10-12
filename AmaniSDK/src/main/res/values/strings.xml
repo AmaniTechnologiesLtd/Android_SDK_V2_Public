@@ -24,6 +24,11 @@
     <string name="id_try_again_desc">Kimilik fotoğraflarında bir hata tespit ettik. Lütfen yeniden dene.</string>
     <string name="selfie_try_again">Selfie fotoğraflarını yeniden çek</string>
     <string name="selfie_try_again_desc">Selfie fotoğraflarında bir hata tespit ettik. Lütfen yeniden dene.</string>
+    <string name="error_2004_message">Sadece kendi yüzün olacak şekilde yeniden denemelisin.</string>
+    <string name="selfie_failed_desc">Biyometrik verin doğrulanırken bir hata oluştu. Müşteri olma sürecini tamamlamak icin adresine kurye ile Müşteri Bilgi Formunu göndereceğiz.</string>
+    <string name="video_onboarding_failed">Görüntülü görüşme sürecin tamamlanamadı</string>
+    <string name="id_failed_desc">Kimlik fotoprafların doğrulanırken bir hata oluştu. Müşteri olma sürecini tamamlamak için adresine kurye ile Müşteri Bilgi Formunu göndereceğiz.</string>
+
 
 
 </resources>

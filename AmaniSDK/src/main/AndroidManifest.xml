@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:name="com.amani.sdk.base.BaseService"
         android:theme="@style/Theme.AmaniSDK">
-        <activity android:name="com.amani.sdk.ui.NFCScanActivity"
+        <activity android:name="com.amani.sdk.ui.activity.NFCScanActivity"
             android:screenOrientation="portrait"
             >
         </activity>

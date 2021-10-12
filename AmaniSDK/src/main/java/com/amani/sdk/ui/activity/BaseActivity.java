@@ -1,4 +1,4 @@
-package com.amani.sdk.base;
+package com.amani.sdk.ui.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;

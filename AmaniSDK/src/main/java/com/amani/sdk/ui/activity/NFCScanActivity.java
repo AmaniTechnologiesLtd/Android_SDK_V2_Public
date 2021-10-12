@@ -1,4 +1,4 @@
-package com.amani.sdk.ui;
+package com.amani.sdk.ui.activity;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -27,10 +27,12 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.amani.sdk.R;
 import com.amani.sdk.base.AppConstants;
-import com.amani.sdk.base.BaseActivity;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackInternal;
 import com.amani.sdk.base.cb.CallBackMessages;
+import com.amani.sdk.ui.component.DialogFragment;
+import com.amani.sdk.ui.fragment.IDScanFragment;
+import com.amani.sdk.ui.fragment.PreviewFragment;
 
 import java.io.FileOutputStream;
 
@@ -147,14 +149,14 @@ public class NFCScanActivity extends BaseActivity {
                 idCard.setVisibility(View.INVISIBLE);
                 lottieAnimationView.setVisibility(View.VISIBLE);
 
-                Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(), birthDate, expireDate, docNo, (bitmap, isSuccess) -> {
+                Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(), birthDate, expireDate, docNo, (bitmap, isSuccess,exception) -> {
 
                     if (isSuccess) {
 
                         lottieAnimationView.setAnimation(R.raw.nfc_done);
                         Log.d("TAG", "onNewIntent: NFC SCANNED");
 
-                        Amani.sharedInstance().ScanNFC().upload(this, "NF", (uploadNFCSuccess, resultNFC) -> {
+                        Amani.sharedInstance().ScanNFC().upload(this, "NF", (uploadNFCSuccess, resultNFC,errors) -> {
 
                             if (uploadNFCSuccess) {
                                 Log.d("TAG", "onNewIntent: NFC UPLOADED");

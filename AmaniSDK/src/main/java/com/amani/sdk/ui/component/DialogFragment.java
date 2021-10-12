@@ -1,4 +1,4 @@
-package com.amani.sdk.ui;
+package com.amani.sdk.ui.component;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.amani.sdk.R;
+import com.amani.sdk.ui.fragment.IDScanFragment;
+import com.amani.sdk.ui.activity.NFCScanActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class DialogFragment extends BottomSheetDialogFragment {

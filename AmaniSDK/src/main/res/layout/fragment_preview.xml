@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradiant_toolbar"
-    tools:context="com.amani.sdk.ui.NFCScanActivity">
+    tools:context="com.amani.sdk.ui.activity.NFCScanActivity">
 
     <TextView
         android:id="@+id/id_sub_title"
@@ -55,7 +55,7 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
-            android:layout_height="16dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="40dp"

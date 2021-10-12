@@ -4,25 +4,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amani.sdk.base.AppConstants;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackMessages;
-import com.amani.sdk.ui.NFCScanActivity;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.security.ProviderInstaller;
-
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.net.ssl.SSLContext;
+import com.amani.sdk.ui.activity.NFCScanActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -89,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
             //If you use TOKEN, you do not need to enter EMAIL and PASSWORD.
             intent.putExtra(AppConstants.TOKEN, "");
 
-            intent.putExtra(AppConstants.EMAIL, "EMAIL" );
-            intent.putExtra(AppConstants.PASSWORD, "vUcxPvfvP9rYUJ");
+            intent.putExtra(AppConstants.EMAIL, "MAIL" );
+            intent.putExtra(AppConstants.PASSWORD, "PASSWORD");
 
             startActivity(intent);
         });

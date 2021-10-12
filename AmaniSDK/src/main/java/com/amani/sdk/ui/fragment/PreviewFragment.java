@@ -1,4 +1,4 @@
-package com.amani.sdk.ui;
+package com.amani.sdk.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,12 +19,14 @@ import android.widget.TextView;
 import com.amani.sdk.R;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackInternal;
+import com.amani.sdk.ui.activity.NFCScanActivity;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.List;
 
 import ai.amani.base.util.Amani;
-import ai.amani.base.util.SessionManager;
+import datamanager.model.customer.Errors;
 
 
 public class PreviewFragment extends Fragment {
@@ -35,6 +37,8 @@ public class PreviewFragment extends Fragment {
     Boolean frontSide, selfie;
     FrameLayout frameLayout;
     TextView subTitle;
+    static int maxAttemptSelfie, maxAttemptID = 0;
+
 
 
     @Override
@@ -111,7 +115,7 @@ public class PreviewFragment extends Fragment {
             else if(selfie) {
 
                 ((NFCScanActivity) getActivity()).showProgressLoader();
-                Amani.sharedInstance().Selfie().upload(getActivity(),"XXX_SE_0", (isSuccess, result) -> {
+                Amani.sharedInstance().Selfie().upload(getActivity(),"XXX_SE_0", (isSuccess, result, errors) -> {
 
                     if (isSuccess){
                         Log.d("TAG", "selfie: Selfie is uploaded!");
@@ -122,12 +126,25 @@ public class PreviewFragment extends Fragment {
                             Log.d("TAG", "Selfie: Pending review: " + "result: " + result);
                             getActivity().finish();
                             if (CallBackInternal.listener != null) CallBackInternal.listener.lastStepCompleted(true);
+                        }else{
+                            maxAttemptSelfie = maxAttemptSelfie + 1;
+                            if (isErrorCodeExist(errors,2004) && maxAttemptSelfie != 3) {
+                                CallBack.listener.selfieUpload(false);
+                                ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.selfie_try_again), getResources().getString(R.string.error_2004_message), "SE_SCREEN");
+
+                            } else if (maxAttemptSelfie == 3) {
+                                CallBack.listener.selfieUpload(false);
+                                ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.video_onboarding_failed), getResources().getString(R.string.selfie_failed_desc), "COURIER");
+                            } else {
+                                CallBack.listener.selfieUpload(false);
+                                ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.selfie_try_again), getResources().getString(R.string.selfie_try_again_desc), "SE_SCREEN");
+                                Log.d("TAG", "Selfie: Invalid doc " + "result: " + result);
+                            }
                         }
-                        else{
-                            CallBack.listener.selfieUpload(false);
-                            ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.selfie_try_again), getResources().getString(R.string.selfie_try_again_desc), "SE_SCREEN");
-                            Log.d("TAG", "Selfie: Invalid doc " + "result: " + result);
-                        }
+
+                    } else {
+                        ((NFCScanActivity) getActivity()).dismissLoader();
+                        Log.d("TAG", "SELFIE UPLOAD NOT SUCCESS ");
                     }
 
                 });
@@ -135,7 +152,7 @@ public class PreviewFragment extends Fragment {
             else {
 
                 ((NFCScanActivity) getActivity()).showProgressLoader();
-                Amani.sharedInstance().IDCapture().upload(getActivity(), "TUR_ID_1", (uploadIDSuccess, result) -> {
+                Amani.sharedInstance().IDCapture().upload(getActivity(), "TUR_ID_1", (uploadIDSuccess, result,errors) -> {
 
                     selfieFragment = Amani.sharedInstance().Selfie().start("XXX_SE_0",(bitmap, isDestroyed) -> {
 
@@ -167,13 +184,22 @@ public class PreviewFragment extends Fragment {
 
                         if (result.equals("OK")) {
                             CallBack.listener.idUpload(true);
+                            ((NFCScanActivity) getContext()).setActionBarTitle(getResources().getString(R.string.biometric_verification));
                             ((NFCScanActivity) getActivity()).addFragment(R.id.bottom_container, selfieFragment,"selfie");
                             Log.d("TAG", "ID: Pending review: ");
                         }
                         else{
-                            CallBack.listener.idUpload(false);
-                            ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.id_try_again), getResources().getString(R.string.id_try_again_desc), "ID_SCREEN");
-                            Log.d("TAG", "ID: Invalid doc ");
+                            maxAttemptID = maxAttemptID + 1;
+                            if (maxAttemptID == 3) {
+                                CallBack.listener.idUpload(false);
+                                ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.video_onboarding_failed), getResources().getString(R.string.id_failed_desc), "COURIER");
+                                Log.d("TAG", "ID: Invalid doc ");
+                            }
+                            else {
+                                CallBack.listener.idUpload(false);
+                                ((NFCScanActivity) getActivity()).showBottomSheetDialog(getResources().getString(R.string.id_try_again), getResources().getString(R.string.id_try_again_desc), "ID_SCREEN");
+                                Log.d("TAG", "ID: Invalid doc ");
+                            }
                         }
                     } else {
                         ((NFCScanActivity) getActivity()).dismissLoader();
@@ -200,6 +226,17 @@ public class PreviewFragment extends Fragment {
         super.onResume();
     }
 
+    private boolean isErrorCodeExist(List<Errors> errors, int errorCode) {
+        if (errors != null) {
 
+            for(int l=0; l < errors.size(); l++){
+                if (errors.get(l).getErrorCode() == errorCode) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
 
 }

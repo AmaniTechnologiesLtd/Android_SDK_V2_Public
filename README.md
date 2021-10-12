@@ -89,7 +89,7 @@ Dependencies:Dependencies:
 ```
 implementation 'ai.amani.android:AmaniAi:2.0.12'
 ```
-### Example of usage:Example of usage:
+### Example of usage:
 
 ```
 dependencies {
@@ -103,7 +103,7 @@ implementation 'ai.amani.android:AmaniAi:2.0.12' // Add only this line
 ```
 dataBinding { enabled true }
 ```
-### Example of usageExample of usage
+### Example of usage
 
 ```
 android {
@@ -248,13 +248,13 @@ Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(),
 "BIRTH DATE" , 
 "EXPIRE DATE" , 
 "DOCUMENT NUMBER", 
-(bitmap, isSuccess) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
+(bitmap, isSuccess, exception) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
 ```
 
 //Uploading NFC datas
 
 ```java 
-Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC) -> 
+Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
 { 
 } ); // It must call if ScanNFC is success.
 ```
@@ -267,11 +267,12 @@ There is a CallBack as the return type of the start and upload methods. This Cal
 ### Upload CallBack:
 ```java 
 //The method in front of the upload() method may vary according to the document as follows.
-Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC) -> 
+Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
 { } ); 
 ```
 - uploadNFCSuccess (type: boolean): The first parameter of the upload method is always set in a boolean sense. Indicates that the upload was successful/failed as true/false.
 - resultNFC (type: String): The second parameter of the upload method is the string of the message returned from the service after the upload process is completed.  The cases where this message returns "OK" are returned when the service accepts this document.
+- errors (type: ArrayList): It contains errorMessages, errorCodes if exists.
 
 ### Start CallBack: 
 The return CallBack of the start function contains one parameter, except NFC, and two in NFC. The meanings of these parameters are below.
@@ -287,5 +288,25 @@ Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().start(tag, getApplicationC
 - bitmap (type: Bitmap) : If this parameter is not "null", it means that the result of the previous function was successful.
 
 - isSuccess (type: boolean) : Indicates whether the operation was successful or unsuccessful.
+
+### NFC Exception: 
+```java 
+...NFC().start("firstParam","secondParam,"thirdParam",(bitmap, isSuccess, exception)) 
+```
+The exception string in the NFC function's return callback returns an error message. You can find these messages below.
+
+#### NFC Exception Messages: 
+
+| Exceptions | Possible Cases  |  
+| ------- | --- | 
+| "Tag was lost" | Situations such as moving the ID during scanning or interrupting the scanning. | 
+| "Failed to connect" | In cases where the connection is disconnected or the ID is removed from the device for some reason during the initial scan startup. | 
+| "Invalid key" | Using incorrect MRZ data or incorrect input states. | 
+| "General exception" | Instant or general exceptions due to device or ID card. | 
+| "Biometric photo not found" | Situations such as the inability to receive the biometric photo from the NFC chip due to identity or device. | 
+
+
+
+
 
 

@@ -1,4 +1,4 @@
-package com.amani.sdk.ui;
+package com.amani.sdk.ui.fragment;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.amani.sdk.R;
+import com.amani.sdk.ui.activity.NFCScanActivity;
 
 import java.io.FileOutputStream;
 

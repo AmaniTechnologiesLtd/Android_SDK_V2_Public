@@ -1,4 +1,4 @@
-package com.amani.sdk.ui;
+package com.amani.sdk.ui.fragment;
 
 import android.os.Bundle;
 
@@ -11,8 +11,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.amani.sdk.R;
-import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackInternal;
+import com.amani.sdk.ui.activity.NFCScanActivity;
 
 
 public class IDScanFragment extends Fragment {
