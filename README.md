@@ -87,14 +87,14 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.0.12'
+implementation 'ai.amani.android:AmaniAi:2.0.20'
 ```
 ### Example of usage:
 
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.0.12' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.0.20' // Add only this line
 ...
 }
 ```
