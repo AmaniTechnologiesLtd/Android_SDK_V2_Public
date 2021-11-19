@@ -87,14 +87,14 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.0.20'
+implementation 'ai.amani.android:AmaniAi:2.1.0'
 ```
 ### Example of usage:
 
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.0.20' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.0' // Add only this line
 ...
 }
 ```
@@ -188,7 +188,7 @@ MainActivity.this.getSupportFragmentManager().beginTransaction()
 .commit();
 }
 ```
-#### Usage ID Capture
+#### Usage of ID Capture
 
 ```java
 //Initiliazing Amani SDK
@@ -222,6 +222,35 @@ yourFragmentMethod(fragment);
 ```java
 //Uploading Selfie Datas 
 Amani.sharedInstance().Selfie().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
+```
+#### Usage of AutoSelfieCapture
+
+```java
+// Preparing AutoSelfieCaptureBuilder for User Interface
+ASCBuilder ascBuilder = new ASCBuilder(
+                  R.color.color_black, // Text color of message
+                  20, // Text size of message
+                  R.color.any_color, // Text color of counter animation.
+                  true, // Counter visibility as boo
+                  100, // Counter text size (It should be proportional to the screen size. As a proper usage: getScreenHeight()/10)
+                  20, // Manual capture button time out as second.
+                  "Be sure to be close enough", // Message texts
+                  "Face not found", // Message texts
+                  "Hold stable, while taking photo", // Message texts
+                  "Failed, process will restart in 3 seconds", // Message texts
+                  R.color.any_color2, // Oval view color
+                  R.color.any_color3); // Success animate color 
+
+//Calling Selfie Fragment 
+Fragment fragment = Amani.sharedInstance().AutoSelfieCapture().start("XXX_SE_0", ascBuilder, frameLayout,(bitmap, onDestroyed, file) -> {
+if (bitmap != null) { // Selfie is successfully captured! } });
+
+yourFragmentMethod(fragment);
+
+```
+```java
+//Uploading Selfie Datas 
+Amani.sharedInstance().AutoSelfieCapture().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
 
 #### Usage of ScanNFC
