@@ -87,14 +87,14 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.0'
+implementation 'ai.amani.android:AmaniAi:2.1.22'
 ```
 ### Example of usage:
 
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.0' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.22' // Add only this line
 ...
 }
 ```
@@ -138,17 +138,25 @@ Sample UsageSample Usage
 
 A sample application that calls Amani SDK functions properly.
 
-#### Usage of BIO Login
-
+#### Amani Initial-First Setup
 
 ```java
-//Initiliazing BIO Login SDK
-Amani.sharedInstance().BioLogin().setParams(getApplicationContext(),"SERVER" );
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
 ```
+
+#### Usage of BIO Login
+
+```java
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+```
+
 ``` java
 //Calling BioLogin Selfie Fragment
 Amani.sharedInstance().BioLogin().setParams(getApplicationContext(),"SERVER", "CUSTOMER ID" );
 ```
+
 ```java
 Fragment fragment = Amani.sharedInstance().BioLogin().start("XXX_SE_0", bitmap -> {
 if (bitmap != null) {
@@ -159,6 +167,7 @@ startActivity(previewActivity);
 });
 replaceFragment(frameLayout,fragment,"YOUR TAG"); // replaceFragment is a public method to open any fragments.
 ```
+
 ``` java
 //Uploading BioLogin datas.
 Amani.sharedInstance().BioLogin().upload(PreviewActivity.this, "XXX_SE_0",
@@ -179,6 +188,7 @@ else {
 }
 });
 ```
+
 ```java
 //Fragment call method. (You can also use your own method to call fragments as you wish.)
 public void replaceFragment(FrameLayout frameLayout, Fragment fragment, String TAG){
@@ -191,8 +201,8 @@ MainActivity.this.getSupportFragmentManager().beginTransaction()
 #### Usage of ID Capture
 
 ```java
-//Initiliazing Amani SDK
-Amani.init(MainActivity.this, "SERVER", "VERSION");
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
 ```
 ``` java
 Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isSuccess, errorCode) -> {
@@ -210,6 +220,10 @@ if (bitmap! null) // ID Capture is done!
 yourFragmentMethod(fragment);
 ```
 #### Usage of Selfie
+```java
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+```
 
 ```java
 
@@ -224,7 +238,10 @@ yourFragmentMethod(fragment);
 Amani.sharedInstance().Selfie().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
 #### Usage of AutoSelfieCapture
-
+```java
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+```
 ```java
 // Preparing AutoSelfieCaptureBuilder for User Interface
 ASCBuilder ascBuilder = new ASCBuilder(
@@ -256,6 +273,11 @@ Amani.sharedInstance().AutoSelfieCapture().upload("ACTIVITY", "DOCUMENT TYPE", (
 #### Usage of ScanNFC
 
 For scanning NFC, will need two override methods. onNewIntent and onResume methods is required. Usage is below.
+
+```java
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+```
 
 ```java
 
