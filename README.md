@@ -238,6 +238,13 @@ yourFragmentMethod(fragment);
 Amani.sharedInstance().Selfie().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
 #### Usage of AutoSelfieCapture
+* Add the following pom to the dependencies section of your gradle build ﬁle :
+```groovy
+  aaptOptions {
+            noCompress "tflite"
+        }
+```        
+        
 ```java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
 Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
