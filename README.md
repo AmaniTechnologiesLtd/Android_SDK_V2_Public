@@ -87,14 +87,14 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.22'
+implementation 'ai.amani.android:AmaniAi:2.1.30'
 ```
 ### Example of usage:
 
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.22' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.30' // Add only this line
 ...
 }
 ```
@@ -133,8 +133,6 @@ url "https://jfrog.amani.ai/artifactory/amani-sdk"
 }
 ```
 ## Usage
-
-Sample UsageSample Usage
 
 A sample application that calls Amani SDK functions properly.
 
@@ -277,6 +275,57 @@ yourFragmentMethod(fragment);
 Amani.sharedInstance().AutoSelfieCapture().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
 
+#### Usage of Generic Document
+This chapter provides clipping and uploading of generic documents by adhering to the desired document type, number and screen configuration. Document type specifies the type of document to be loaded and the document builder specifies the display configurations (colors, texts, documentCount:how many document will be taken from camera.) in it.    
+        
+```java
+//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+```
+* Preparing DocumentBuilder
+```java
+// Preparing DocumentBuilder for User Interface && Some Logic Operations
+ DocBuilder docBuilder = new DocBuilder("Tekrar Dene",
+                "Onayla",
+                R.color.color_blue,
+                R.color.color_blue,
+                R.color.white,
+                2);
+```
+* Replacing Fragment and Uploading Data from Camera
+```java
+//Calling Generic Document Fragment and Uploading Documents (due to lambda function result)
+Fragment docFragment = Amani.sharedInstance().Document().start("DOC_TYPE",docBuilder, frameLayout,(docList,isSucess)->{
+
+            if (isSuccess) {
+                //Uploading Generic Documents that taken from camera            
+                Amani.sharedInstance().Document().upload(this,"DOC_TYPE",(isSuccess, result, errors) -> {
+                    if (isSuccess) Toast.makeText(this,"Generic Document Upload is Success", Toast.LENGTH_LONG).show();
+                    else Toast.makeText(this,"Generic Document Upload is Not Success", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+        yourFragmentMethod(docFragment);
+```
+* Uploading Generic Documents
+```java
+// Uploading Generic Documents that taken as ByteArray (Not from camera, will be provided from as static data as ArrayList of ByteArray)
+Amani.sharedInstance().Document().upload(this,"TUR_ID_1",byteArrayList,(iSuccess,result,listOfErrors)->{
+            if (isSuccess)//Upload is SUCCESS!
+        });
+```
+* Deleting Document Cache Files (Optional usage, NOT Required!)
+
+```java
+// It provides to delete all files that taken from camera.
+// It must be called when the upload process is done. 
+// (You can check nullability of "isSucess: Boo" in Document.start() lambda
+// expression callback to understand process of upload is done or not!)
+// Otherwise upload will be failed.
+// Also you can delete the files from given file path by yourself. 
+// It means no need to use it.
+Amani.sharedInstance().Document().deleteAllDocumentCaches();
+```
 #### Usage of ScanNFC
 
 For scanning NFC, will need two override methods. onNewIntent and onResume methods is required. Usage is below.
