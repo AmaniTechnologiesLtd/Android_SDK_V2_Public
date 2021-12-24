@@ -285,12 +285,12 @@ Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a 
 * Preparing DocumentBuilder
 ```java
 // Preparing DocumentBuilder for User Interface && Some Logic Operations
- DocBuilder docBuilder = new DocBuilder("Tekrar Dene",
-                "Onayla",
-                R.color.color_blue,
-                R.color.color_blue,
-                R.color.white,
-                2);
+ DocBuilder docBuilder = new DocBuilder("Tekrar Dene", // Text label
+                "Onayla", // Text label
+                R.color.color_blue, // Text color
+                R.color.color_blue, // Text color
+                R.color.white, // Button color
+                2); // Indicates the number of documents.
 ```
 * Replacing Fragment and Uploading Data from Camera
 ```java
