@@ -1,7 +1,7 @@
 
-# Amani SDKAmani SDK
+# Amani SDK
 
-# Table of ContentTable of Content
+# Table of Content
 
 ```
 Overview
@@ -12,7 +12,7 @@ Overview
  -Usage
  -Param Guideline
 ```
-# OverviewOverview
+# Overview
 
 The Amani Software Development kit (SDK) provides you complete steps to perform KYC.This SDK consists of 5 steps:
 
@@ -75,7 +75,7 @@ have the following keys in your application's Manifest file:
 ```
 NoteNote: All keys will be required for app submission.
 
-### Grant accesss to ScanNFCGrant accesss to ScanNFC
+### Grant accesss to Scan
 
 Enable the Near Field Communication Tag Reading capability in the target Signing & Capabilities.
 
