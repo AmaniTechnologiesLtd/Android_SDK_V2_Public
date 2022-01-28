@@ -2,8 +2,7 @@ package com.amani.sdk.base;
 
 import android.app.Application;
 
-
-import ai.amani.base.util.Amani;
+import ai.amani.sdk.Amani;
 
 
 public class BaseService extends Application {

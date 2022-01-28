@@ -36,9 +36,10 @@ import com.amani.sdk.ui.fragment.PreviewFragment;
 
 import java.io.FileOutputStream;
 
-import ai.amani.base.util.Amani;
 import ai.amani.base.util.SessionManager;
+import ai.amani.sdk.Amani;
 
+@RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
 public class NFCScanActivity extends BaseActivity {
 
     Button  buttonCancel;
@@ -58,7 +59,6 @@ public class NFCScanActivity extends BaseActivity {
     static int maxAttempt;
     public static boolean nfcScan= true;
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +74,6 @@ public class NFCScanActivity extends BaseActivity {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
     private void initAmani() {
 
         nfcScan = true;
@@ -268,7 +267,7 @@ public class NFCScanActivity extends BaseActivity {
     }
 
     public void startSelfie() {
-        selfieFragment = Amani.sharedInstance().Selfie().start("XXX_SE_0",(bitmap, isDestroyed) -> {
+        selfieFragment = Amani.sharedInstance().Selfie().start("XXX_SE_0",(bitmap, isDestroyed,file) -> {
 
             if (bitmap != null) {
 
@@ -298,7 +297,7 @@ public class NFCScanActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         dismissLoader();
-        if (Boolean.TRUE.equals(isCourierRequested))  CallBack.listener.activityFinished(true, CallBackMessages.COURIER_REQUESTED,SessionManager.getCustomerId(), null);
+        if (Boolean.TRUE.equals(isCourierRequested))  CallBack.listener.activityFinished(true, CallBackMessages.COURIER_REQUESTED, SessionManager.getCustomerId(), null);
         if (Boolean.FALSE.equals(isLoginSuccess)) CallBack.listener.activityFinished(true, CallBackMessages.CAUSE_LOGIN, null,null);
         if (Boolean.TRUE.equals(isUserExit)) CallBack.listener.activityFinished(true, CallBackMessages.DESTROYED_BY_USER, SessionManager.getCustomerId(),null);
         if (Boolean.TRUE.equals(isVerificationCompleted)) CallBack.listener.activityFinished(true, CallBackMessages.VERIFICATION_COMPLETED, SessionManager.getCustomerId(), null);

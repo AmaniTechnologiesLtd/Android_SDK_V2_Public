@@ -3,10 +3,11 @@ package com.amani.sdk.ui.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,20 +16,18 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.amani.sdk.R;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackInternal;
 import com.amani.sdk.ui.activity.NFCScanActivity;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 
-import ai.amani.base.util.Amani;
+import ai.amani.sdk.Amani;
 import datamanager.model.customer.Errors;
 
-
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class PreviewFragment extends Fragment {
 
     ImageView imageID;
@@ -154,7 +153,7 @@ public class PreviewFragment extends Fragment {
                 ((NFCScanActivity) getActivity()).showProgressLoader();
                 Amani.sharedInstance().IDCapture().upload(getActivity(), "TUR_ID_1", (uploadIDSuccess, result,errors) -> {
 
-                    selfieFragment = Amani.sharedInstance().Selfie().start("XXX_SE_0",(bitmap, isDestroyed) -> {
+                    selfieFragment = Amani.sharedInstance().Selfie().start("XXX_SE_0",(bitmap, isDestroyed,file) -> {
 
                         if (isDestroyed) Log.d("TAG", "SelfiFragment: is destroyed");
 

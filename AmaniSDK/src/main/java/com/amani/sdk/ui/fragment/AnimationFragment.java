@@ -20,8 +20,9 @@ import com.amani.sdk.ui.activity.NFCScanActivity;
 
 import java.io.FileOutputStream;
 
-import ai.amani.base.util.Amani;
+import ai.amani.sdk.Amani;
 
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
 public class AnimationFragment extends Fragment {
 
     LottieAnimationView idScanAnimation;
@@ -56,7 +57,6 @@ public class AnimationFragment extends Fragment {
         frontSide = bundle.getBoolean("frontSide", false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     private void startAnimation() {
         if (frontSide) {
             idScanAnimation.setAnimation(R.raw.trfront);
@@ -70,10 +70,11 @@ public class AnimationFragment extends Fragment {
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (frontSide) {
-                    fragment = Amani.sharedInstance().IDCapture().start(getActivity(),bottomContainer,"TUR_ID_1", true, (bitmap, isDestroyed) -> {
+                    fragment = Amani.sharedInstance().IDCapture().start(getActivity(),bottomContainer,"TUR_ID_1", true, (bitmap, isDestroyed,file) -> {
 
                         if (bitmap != null) {
 
@@ -104,7 +105,7 @@ public class AnimationFragment extends Fragment {
                 }
                 else {
 
-                    fragment = Amani.sharedInstance().IDCapture().start(getActivity(), bottomContainer, "TUR_ID_1", false, (bitmap, isDestroyed) -> {
+                    fragment = Amani.sharedInstance().IDCapture().start(getActivity(), bottomContainer, "TUR_ID_1", false, (bitmap, isDestroyed,file) -> {
                         if (bitmap != null) {
 
                             try {
