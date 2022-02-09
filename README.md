@@ -584,7 +584,12 @@ these messages below.
 | -HttpErrorCodes- | Http Response Exception | 
 
 
-
-
+## ProGuard Rule Usage ##
+    
+   * If you are using ProGuard in your application, you need to add this code block into your rules!
+   
+   ```java
+    -keep class ai.amani.jniLibrary.CroppedResult { *; }
+   ``` 
 
 
