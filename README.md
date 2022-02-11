@@ -305,7 +305,7 @@ document type, number and screen configuration. Document type specifies the type
 loaded and the document builder specifies the display configurations (colors, texts, documentCount:
 how many document will be taken from camera.) in it.
 
-*Supported file type list; file.pdf, file.jpg, file.png, file.webp, file.bmp
+* Supported file type list; file.pdf, file.jpg, file.png, file.webp, file.bmp
 
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
