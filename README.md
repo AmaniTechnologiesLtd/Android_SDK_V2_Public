@@ -93,7 +93,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.36'
+implementation 'ai.amani.android:AmaniAi:2.1.38'
 ```
 
 ### Example of usage:
@@ -101,7 +101,7 @@ implementation 'ai.amani.android:AmaniAi:2.1.36'
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.36' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.38' // Add only this line
 ...
 }
 ```
@@ -305,6 +305,8 @@ document type, number and screen configuration. Document type specifies the type
 loaded and the document builder specifies the display configurations (colors, texts, documentCount:
 how many document will be taken from camera.) in it.
 
+*Supported file type list; file.pdf, file.jpg, file.png, file.webp, file.bmp
+
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
 Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
@@ -342,8 +344,18 @@ Fragment docFragment = Amani.sharedInstance().Document().start("DOC_TYPE",docBui
 * Uploading Generic Documents
 
 ``` java
-// Uploading Generic Documents that taken as ByteArray (Not from camera, will be provided from as static data as ArrayList of ByteArray)
-Amani.sharedInstance().Document().upload(this,"TUR_ID_1",byteArrayList,(iSuccess,result,listOfErrors)->{
+// Uploading Generic Documents that taken as ByteArray (Not from camera, will be provided from as static data as ArrayList of
+//FileWithType data class that will be provided from AmaniSDK.)
+
+FileWithType docData1 = new FileWithType(byteArrayOfPdf,"pdf"); // An object data class first param: byteArray, second param: type (file type: jpeg,pdf,png etc.)
+FileWithType docData2 = new FileWithType(byteArrayOfJpeg, "jpeg");
+
+ArrayList<FileWithType> docDataList = new ArrayList<>(); // List of files that will be given to upload.
+docDataList.add(docData1); // Adding first document data
+docDataList.add(docData2); // Second document data
+... // Up to 10 document uploads have been tested without any problems.
+
+Amani.sharedInstance().Document().upload(this,"TUR_ID_1",docDataList,(iSuccess,result,listOfErrors)->{
             if (isSuccess)//Upload is SUCCESS!
         });
 ```
@@ -589,7 +601,12 @@ these messages below.
    * If you are using ProGuard in your application, you need to add this code block into your rules!
    
    ```java
-    -keep class ai.amani.jniLibrary.CroppedResult { *; }
+-keep class ai.* {;}
+-dontwarn ai.**
+-keep class datamanager.* {;}
+-dontwarn datamanager.**
+-keep class networkmanager.* {;}
+-dontwarn networkmanager.**
    ``` 
 
 
