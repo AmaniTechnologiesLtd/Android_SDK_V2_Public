@@ -93,7 +93,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.38'
+implementation 'ai.amani.android:AmaniAi:2.1.39'
 ```
 
 ### Example of usage:
@@ -101,7 +101,7 @@ implementation 'ai.amani.android:AmaniAi:2.1.38'
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.38' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.39' // Add only this line
 ...
 }
 ```
