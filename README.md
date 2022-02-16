@@ -601,11 +601,11 @@ these messages below.
    * If you are using ProGuard in your application, you need to add this code block into your rules!
    
    ```java
--keep class ai.* {;}
+-keep class ai.** {*;}
 -dontwarn ai.**
--keep class datamanager.* {;}
+-keep class datamanager.** {*;}
 -dontwarn datamanager.**
--keep class networkmanager.* {;}
+-keep class networkmanager.** {*;}
 -dontwarn networkmanager.**
    ``` 
 
