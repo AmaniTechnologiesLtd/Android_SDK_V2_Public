@@ -93,7 +93,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.39'
+implementation 'ai.amani.android:AmaniAi:2.1.41'
 ```
 
 ### Example of usage:
@@ -101,7 +101,7 @@ implementation 'ai.amani.android:AmaniAi:2.1.39'
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.39' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.41' // Add only this line
 ...
 }
 ```
@@ -514,6 +514,24 @@ Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(),
 "EXPIRE DATE" , 
 "DOCUMENT NUMBER", 
 (bitmap, isSuccess, exception) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
+```
+
+#### Usage of Video Call
+This method, which has a single sub-function, returns an intent. When you call the intent, the call starts in the chrome application, if there is no call, you can catch it from the exception.
+After the initAmani method is called and the login process is successful, it should be used as in the example.
+
+``` java
+Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isSuccess, errorCode) -> {
+            if (isSuccess){
+                //Login successful 
+                try {
+                    startActivity(Amani.sharedInstance().VideoCall().start(getApplicationContext()));
+                } catch (ActivityNotFoundException e) {
+                    Log.e("TAG", "Chrome not found: ");
+                    // You can set any alert message to download chrome
+                }
+            }
+        });
 ```
 
 //Uploading NFC datas

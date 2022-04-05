@@ -3,6 +3,7 @@ package com.amani.sample;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,8 @@ import com.amani.sdk.base.AppConstants;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackMessages;
 import com.amani.sdk.ui.activity.NFCScanActivity;
+
+import ai.amani.sdk.Amani;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -57,10 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void selfieUpload(boolean isSuccess) {
-                if(isSuccess) Log.d("reason", ": "  );
-
+                if(isSuccess) {
+                    try {
+                        startActivity(Amani.sharedInstance().VideoCall().start(getApplicationContext()));
+                    } catch (ActivityNotFoundException e) {
+                        Log.e("TAG", "Chrome not found: ");
+                        // You can set any alert message to download chrome
+                    }
+                }
             }
-
         });
 
         buttonStart.setOnClickListener(v -> {
