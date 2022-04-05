@@ -516,6 +516,14 @@ Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(),
 (bitmap, isSuccess, exception) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
 ```
 
+//Uploading NFC datas
+
+```java 
+Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
+{ 
+} ); // It must call if ScanNFC is success.
+```
+
 #### Usage of Video Call
 This method, which has a single sub-function, returns an intent. When you call the intent, the call starts in the chrome application, if there is no call, you can catch it from the exception.
 After the initAmani method is called and the login process is successful, it should be used as in the example.
@@ -532,14 +540,6 @@ Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isS
                 }
             }
         });
-```
-
-//Uploading NFC datas
-
-```java 
-Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
-{ 
-} ); // It must call if ScanNFC is success.
 ```
 
 ## CallBack Guideline
