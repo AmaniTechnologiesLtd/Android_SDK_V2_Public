@@ -59,6 +59,8 @@ public class DialogFragment extends BottomSheetDialogFragment {
             } else if (mGoTo.equals("DISMISS")) {
                 NFCScanActivity.nfcScan = true;
                 dismiss();
+            } else {
+                requireActivity().finish();
             }
 
         });

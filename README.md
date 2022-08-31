@@ -1,16 +1,34 @@
 # Amani SDK
 
-# Table of Content
 
-```
-Overview
--Basics
--General Requirements
--Permissions
--Integration
- -Usage
- -Param Guideline
-```
+# Table of Content
+- [Overview](#overivew)
+- [Basics](#basics)
+    - [General Requirements](#general-requirements)
+    - [App Permissions](#app-permissions)
+- [Integration](#integration)
+- [Amani SDK Usage](#amani-sdk-usage)
+    - [Amani Initial-First Setup](#amani-initial-first-setup)
+    - [BIO Login](#bio-login)
+    - [ID Capture](#id-capture)
+    - [Manual Selfie Capture](#selfie)
+    - [Auto Selfie Capture](#auto-selfie-capture)
+    - [Selfie Pose Estimation](#selfie-pose-estimation)
+    - [Generic Document](#generic-document)
+    - [Selfie](#selfie)
+    - [Customer Update](#customer-update)
+    - [Digital Signature](#digital-signature)
+    - [NFC Reading](#nfc-reading)    
+    - [Video Call](#video-call)    
+- [CallBack Guideline](#callback-guideline)
+    - [Upload CallBack](#upload-callback)
+    - [Start CallBack](#start-callback)
+    - [Exceptions](#exceptions)    
+        - [NFC Exception](#nfc-exception)    
+          - [NFC Exception Messages](#nfc-exception-messages)   
+        - [General SDK Exceptions](general-sdk-exceptions)   
+- [ProGuard Rule Usage](#proguard-rule-usage)
+
 
 # Overview
 
@@ -49,11 +67,6 @@ and then at the end upload the same.
 In this step, you will download your physical contract. Then you have to upload the same contrat by
 filling the all the information to get your physical contract verified.
 
-## Congratulation Screen:
-
-After successfully uploading of all the documents you will see a congratulation screen saying you
-completed all the steps.We will check your documents and increase your limit in 48 hours.
-
 # Basics
 
 ## General Requirements
@@ -62,7 +75,7 @@ The minimum requirements for the SDK are:
 
 * API Level 21
 
-## App permissions
+## App Permissions
 
 Amani SDK makes use of the device Camera, Location and ScanNFC. If you dont want to use location
 service please provide in init method. You will be required to have the following keys in your
@@ -93,7 +106,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```
-implementation 'ai.amani.android:AmaniAi:2.1.45'
+implementation 'ai.amani.android:AmaniAi:2.1.50'
 ```
 
 ### Example of usage:
@@ -101,7 +114,7 @@ implementation 'ai.amani.android:AmaniAi:2.1.45'
 ```
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.45' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.50' // Add only this line
 ...
 }
 ```
@@ -144,18 +157,19 @@ url "https://jfrog.amani.ai/artifactory/amani-sdk"
 }
 ```
 
-## Usage
+# Amani SDK Usage
 
 A sample application that calls Amani SDK functions properly.
 
-#### Amani Initial-First Setup
+## Amani Initial-First Setup
 
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
 Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
 ```
+-----
 
-#### Usage of BIO Login
+## BIO Login
 
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
@@ -198,18 +212,9 @@ else {
 }
 });
 ```
+-----
 
-``` java
-//Fragment call method. (You can also use your own method to call fragments as you wish.)
-public void replaceFragment(FrameLayout frameLayout, Fragment fragment, String TAG){
-MainActivity.this.getSupportFragmentManager().beginTransaction()
-.replace(frameLayout.getId(), fragment, TAG)
-.addToBackStack(null)
-.commit();
-}
-```
-
-#### Usage of ID Capture
+## ID Capture
 
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
@@ -232,8 +237,9 @@ if (bitmap! null) // ID Capture is done!
 
 yourFragmentMethod(fragment);
 ```
+-----
 
-#### Usage of Selfie
+## Manual Selfie Capture
 
 ``` java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
@@ -253,8 +259,9 @@ yourFragmentMethod(fragment);
 //Uploading Selfie Datas 
 Amani.sharedInstance().Selfie().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
+-----
 
-#### Usage of AutoSelfieCapture
+## Auto Selfie Capture
 
 * Add the following pom to the dependencies section of your gradle build ﬁle :
 
@@ -297,8 +304,68 @@ yourFragmentMethod(fragment);
 //Uploading Selfie Datas 
 Amani.sharedInstance().AutoSelfieCapture().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
 ```
+-----
+## Selfie Pose Estimation
+Pose Estimation creates a view that asks the user for random and certain number of head movements to confirms them from camera stream at run time that you can observer it with the customer observer pattern. You can use this view fragmentally as in other chapters.
 
-#### Usage of Generic Document
+``` java
+
+    // Creating custom Selfie Poese Estimation fragment to navigate it     
+    Fragment fragment = Amani.sharedInstance().SelfiePoseEstimation()
+            .Builder()
+            .requestedPoseNumber(1)
+            .ovalViewAnimationDurationMilSec(500)
+            .observe(observer)
+            .userInterfaceColors(
+                    R.color.white,
+                    R.color.approve_green,
+                    R.color.error_red,
+                    R.color.color_white,
+                    R.color.white,
+                    R.color.white,
+                    R.color.color_pink,
+                    R.color.white)
+            .userInterfaceTexts(
+                    "Your face is not inside the area",
+                    "Your face is not straight",
+                    "Your face is too far from camera",
+                    "Please keep straight the phone",
+                    "Verification Failed 1",
+                    "Failed 1",
+                    "Try Again 1"
+            )
+            .build(this);
+
+     // Navigating the fragment with null check 
+     if(fragment != null) {
+         navigatetFragmentMethod(fragment);
+     }       
+
+    // Creating the observer to observer PoseEstimation events    
+    private PoseEstimationObserver observer = new PoseEstimationObserver() {
+        @Override
+        public void onSuccess(@Nullable Bitmap bitmap) {
+
+        }
+
+        @Override
+        public void onFailure(@NonNull OnFailurePoseEstimation reason, int currentAttempt) {
+
+        }
+
+        @Override
+        public void onError(@NonNull Error error) {
+
+        }
+    };        
+
+            
+```
+
+
+-----
+
+## Generic Document
 
 This chapter provides clipping and uploading of generic documents by adhering to the desired
 document type, number and screen configuration. Document type specifies the type of document to be
@@ -372,8 +439,9 @@ Amani.sharedInstance().Document().upload(this,"TUR_ID_1",docDataList,(iSuccess,r
 // It means no need to use it.
 Amani.sharedInstance().Document().deleteAllDocumentCaches();
 ```
+-----
 
-#### Usage of Customer Update
+## Customer Update
 
 * It basically contains two functions, setCustomerInfo() and upload() function. The setInfo()
   function is a function that records the basic information of the user, and it must be called
@@ -383,7 +451,6 @@ Amani.sharedInstance().Document().deleteAllDocumentCaches();
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
 Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
 ```
-
 * setInfo() function example usage;
 
 ``` java
@@ -393,7 +460,6 @@ Amani.sharedInstance().CustomerInfo().setInfo("Mobile Developer",
         "Maslak Mah. ..."
         );
 ```
-
 * upload() function example usage;
 
 ``` java
@@ -405,8 +471,9 @@ Amani.sharedInstance().CustomerInfo().setInfo("Mobile Developer",
             }
             });
 ```
+-----
 
-#### Usage of Digital Signature
+## Digital Signature
 
 Signature() method basically contains 5 inner methods; start() , upload(), clean(), confirm(),
 resetCountOfSignature().
@@ -455,6 +522,7 @@ Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN
 });                                                                                                               
 ```
 
+
 * clean() function example usage;
 
 ``` java
@@ -471,6 +539,7 @@ Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN
         }
 ```
 
+
 * confirm() function example usage;
 
 ``` java
@@ -482,8 +551,9 @@ Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN
 ``` java
     Amani.sharedInstance().Signature().resetCountOfSignature();
 ```
+-----
 
-#### Usage of ScanNFC
+## NFC Reading
 
 For scanning NFC, will need two override methods. onNewIntent and onResume methods is required.
 Usage is below.
@@ -523,8 +593,9 @@ Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess,
 { 
 } ); // It must call if ScanNFC is success.
 ```
+-----
 
-#### Usage of Video Call
+## Video Call
 This method, which has a single sub-function, returns an intent. When you call the intent, the call starts in the chrome application, if there is no call, you can catch it from the exception.
 After the initAmani method is called and the login process is successful, it should be used as in the example.
 
@@ -541,15 +612,16 @@ Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isS
             }
         });
 ```
+-----
 
-## CallBack Guideline
+# CallBack Guideline
 
 There is a CallBack as the return type of the start and upload methods. This CallBack usually gives
 you 2 parameters. You can find out what these parameters mean below.
 
 - You can change the names of these parameters as you wish.
 
-### Upload CallBack:
+## Upload CallBack:
 
 ```java 
 //The method in front of the upload() method may vary according to the document as follows.
@@ -564,7 +636,7 @@ Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE
   returns "OK" are returned when the service accepts this document.
 - errors (type: ArrayList): It contains errorMessages, errorCodes if exists.
 
-### Start CallBack:
+## Start CallBack:
 
 The return CallBack of the start function contains one parameter, except NFC, and two in NFC. The
 meanings of these parameters are below.
@@ -594,6 +666,7 @@ Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().start(tag, getApplicationC
 The exception string in the NFC function's return callback returns an error message. You can find
 these messages below.
 
+
 ### NFC Exception Messages:
 
 | Exceptions | Possible Cases  |  
@@ -604,6 +677,7 @@ these messages below.
 | "General exception" | Instant or general exceptions due to device or ID card. | 
 | "Biometric photo not found" | Situations such as the inability to receive the biometric photo from the NFC chip due to identity or device. | 
 
+
 ### General SDK Exceptions:
 
 | Exception Codes | Cases  |  
@@ -612,6 +686,7 @@ these messages below.
 | 10505 | General Connection Error | 
 | 10506 | AppConfig Error | 
 | -HttpErrorCodes- | Http Response Exception | 
+-----
 
 
 ## ProGuard Rule Usage ##

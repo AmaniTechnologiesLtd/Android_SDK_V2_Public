@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             public void selfieUpload(boolean isSuccess) {
                 if(isSuccess) {
                     try {
-                        startActivity(Amani.sharedInstance().VideoCall().start(getApplicationContext()));
+                        startActivity(Amani.sharedInstance().VideoCall().start());
                     } catch (ActivityNotFoundException e) {
                         Log.e("TAG", "Chrome not found: ");
                         // You can set any alert message to download chrome

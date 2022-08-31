@@ -85,6 +85,8 @@ public class NFCScanActivity extends BaseActivity {
                     Log.d("TAG", "Login Amani is SUCCESSFUL by token ");
                     if (CallBackInternal.listener != null) CallBackInternal.listener.loginSuccess(true);
 
+                    startSelfie();
+
                 } else {
                     finish();
                     if (CallBackInternal.listener != null) CallBackInternal.listener.loginSuccess(false);
@@ -96,6 +98,8 @@ public class NFCScanActivity extends BaseActivity {
                 if (isSuccess) {
                     if (CallBackInternal.listener != null) CallBackInternal.listener.loginSuccess(true);
                     Log.d("TAG", "Login Amani is SUCCESSFUL by credentials ");
+
+                    startSelfie();
 
                 } else {
                     finish();
@@ -155,7 +159,7 @@ public class NFCScanActivity extends BaseActivity {
                         lottieAnimationView.setAnimation(R.raw.nfc_done);
                         Log.d("TAG", "onNewIntent: NFC SCANNED");
 
-                        Amani.sharedInstance().ScanNFC().upload(this, "NF", (uploadNFCSuccess, resultNFC,errors) -> {
+                        Amani.sharedInstance().ScanNFC().upload(this, "XXX_NF_0", (uploadNFCSuccess, resultNFC,errors) -> {
 
                             if (uploadNFCSuccess) {
                                 Log.d("TAG", "onNewIntent: NFC UPLOADED");
