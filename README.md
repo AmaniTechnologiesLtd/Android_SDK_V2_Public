@@ -3,7 +3,7 @@
 
 
 # Table of Content
-- [Overview](#overivew)
+- [Overview](#overview)
 - [Basics](#basics)
     - [General Requirements](#general-requirements)
     - [App Permissions](#app-permissions)
@@ -12,12 +12,12 @@
     - [Amani Initial-First Setup](#amani-initial-first-setup)
     - [BIO Login](#bio-login)
     - [ID Capture](#id-capture)
-    - [Manual Selfie Capture](#selfie)
+    - [Manual Selfie Capture](#manual-selfie-capture)
     - [Auto Selfie Capture](#auto-selfie-capture)
     - [Selfie Pose Estimation](#selfie-pose-estimation)
     - [Generic Document](#generic-document)
-    - [Selfie](#selfie)
     - [Customer Update](#customer-update)
+    - [Customer Detail](#customer-detail)
     - [Digital Signature](#digital-signature)
     - [NFC Reading](#nfc-reading)    
     - [Video Call](#video-call)    
@@ -471,6 +471,22 @@ Amani.sharedInstance().CustomerInfo().setInfo("Mobile Developer",
             // There is an error.
             }
             });
+```
+-----
+
+## Customer Detail
+
+It is used to get information about the last updated details about the created customer.
+
+``` java
+  Amani.sharedInstance().CustomerDetail().getCustomerDetail(new CustomerDetailObserver() {
+            @Override
+            public void result(@Nullable ResCustomerDetail customerDetail, @Nullable Throwable throwable) {
+                //customerDetail is fetched if there is no throwable
+            }
+        });
+
+
 ```
 -----
 
