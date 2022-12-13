@@ -7,10 +7,15 @@
 - [Basics](#basics)
     - [General Requirements](#general-requirements)
     - [App Permissions](#app-permissions)
+    - [ProGuard Rule Usage](#proguard-rule-usage)
 - [Integration](#integration)
 - [Amani SDK Usage](#amani-sdk-usage)
     - [Amani Initial-First Setup](#amani-initial-first-setup)
     - [BIO Login](#bio-login)
+        - [Manual Selfie Capture](#manual-selfie-capture)
+        - [Auto Selfie Capture](#auto-selfie-capture)
+        - [Selfie Pose Estimation](#selfie-pose-estimation)
+        - [Common](#common)
     - [ID Capture](#id-capture)
     - [Manual Selfie Capture](#manual-selfie-capture)
     - [Auto Selfie Capture](#auto-selfie-capture)
@@ -28,7 +33,7 @@
         - [NFC Exception](#nfc-exception)    
           - [NFC Exception Messages](#nfc-exception-messages)   
         - [General SDK Exceptions](general-sdk-exceptions)   
-- [ProGuard Rule Usage](#proguard-rule-usage)
+
 
 
 # Overview
@@ -82,7 +87,7 @@ Amani SDK makes use of the device Camera, Location and ScanNFC. If you dont want
 service please provide in init method. You will be required to have the following keys in your
 application's Manifest file:
 
-```
+```xml
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.INTERNET" />
@@ -94,11 +99,31 @@ application's Manifest file:
 <uses-permission android:name="android.permission.ScanNFC" />
 ```
 
-NoteNote: All keys will be required for app submission.
 
-### Grant accesss to Scan
+## ProGuard Rule Usage ##
+    
+   * If you are using ProGuard in your application, you need to add this code block into your rules!
+   
+   ```groovy
+-keep class ai.** {*;}
+-dontwarn ai.**
+-keep class datamanager.** {*;}
+-dontwarn datamanager.**
+-keep class networkmanager.** {*;}
+-dontwarn networkmanager.**
 
-Enable the Near Field Communication Tag Reading capability in the target Signing & Capabilities.
+-keep class org.jmrtd.** {*;}
+-keep class net.sf.scuba.** {*;}
+-keep class org.bouncycastle.** {*;}
+-keep class org.spongycastle.** {*;}
+-keep class org.ejbca.** {*;}
+
+-dontwarn org.ejbca.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.spongycastle.**
+-dontwarn org.jmrtd.**
+-dontwarn net.sf.scuba.**
+   ``` 
 
 ## Integration
 
@@ -106,29 +131,29 @@ Dependencies:Dependencies:
 
 1. Add the following dependencies to your Module build.gradle file.
 
-```
-implementation 'ai.amani.android:AmaniAi:2.1.50'
+```groovy
+implementation 'ai.amani.android:AmaniAi:2.1.53'
 ```
 
 ### Example of usage:
 
-```
+```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.50' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.53' // Add only this line
 ...
 }
 ```
 
 2. Enable DataBinding in the Module build.gradle by adding this line into code block of android {}:
 
-```
+```groovy
 dataBinding { enabled true }
 ```
 
 ### Example of usage
 
-```
+```groovy
 android {
 ...
 
@@ -140,13 +165,13 @@ dataBinding { enabled true } // Add this line to enable data binding feature.
 3. Add the following in the Project build.gradle within in buildscript within the buildscript->
    repositories and buildscript->allprojects.
 
-```
+```groovy
 maven { url "https://jfrog.amani.ai/artifactory/amani-sdk"}
 ```
 
 ### Example of usage:
 
-```
+```groovy
 allprojects {
 repositories {
 google()
@@ -164,122 +189,379 @@ A sample application that calls Amani SDK functions properly.
 
 ## Amani Initial-First Setup
 
-``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+> **Warning**
+> This init method must be called once before all other methods. This is required for installation of other methods. If other methods/modules are used without calling Init, you will get a RuntimeException("Amani not initialised") error. In such cases, make sure that Amani's init method is called.
+
+> **Note**
+> SHARED_SECRET is a key that ensures and validates the validity/security of the request in network requests. This key will be sent to you confidentially by the Amani team.
+In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations.
+
+
+```kotlin
+//Initiliazing Amani SDK with SHARED_SECRET
+Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET") 
+
+//Initiliazing Amani SDK without SHARED_SECRET
+Amani.init(MainActivity.this, "SERVER", null) 
 ```
 -----
 
 ## BIO Login
 
-``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
-```
+### Manual Selfie Capture
 
-``` java
-//Calling BioLogin Selfie Fragment
-Amani.sharedInstance().BioLogin().setParams(getApplicationContext(),"SERVER", "CUSTOMER ID" );
-```
+It includes the Fragment that allows the selfie to be taken manually from the user with the help of a button. The difference from Auto Selfie is that there is no button in Auto Selfie Capture and the selfie is taken automatically.
 
-``` java
-Fragment fragment = Amani.sharedInstance().BioLogin().start("XXX_SE_0", bitmap -> {
-if (bitmap != null) {
-SelfieBm = bitmap;
-Intent previewActivity = new Intent(getApplicationContext(), PreviewActivity.class);
-startActivity(previewActivity);
-}
-});
-replaceFragment(frameLayout,fragment,"YOUR TAG"); // replaceFragment is a public method to open any fragments.
-```
+* BioLogin().ManualSelfieCapture() : Contains the necessary User Interface configurations for Manual Selfie
 
-``` java
-//Uploading BioLogin datas.
-Amani.sharedInstance().BioLogin().upload(PreviewActivity.this, "XXX_SE_0",
-"TOKEN",
-"CUSTOMER ID", (isSuccess, result) -> {
-if (isSuccess) {
-// Upload is successfull!
-}
-else {
-// Failed!
-}
+```kotlin
+        //Manual Selfie Capture User interface configuration
+        val fragment: Fragment? = Amani.sharedInstance().BioLogin().ManualSelfieCapture()
+            .userInterfaceColors(
+                appFontColor = R.color.white,
+                manualButtonColor = R.color.white,
+                ovalViewColor = R.color.white,
+                appBackgroundColor = R.color.white
+            )
+            .userInterfaceTexts(
+                "PLease be sure your face is inside the area!"
+            )
+            .observer(object : ManualSelfieCaptureObserver {
+                override fun cb(bitmap: Bitmap?) {
+                   if (bitmap != null) {
+                       //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
+                       uploadSelfie()
+                   }
+                }
+            })
+            .build()
 
-if(result) {
-// Successfuly login!
-}
-else {
-//BioLogin is not successful!
-}
-});
-```
------
-
-## ID Capture
-
-``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
-```
-
-``` java
-Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isSuccess, errorCode) -> {
-if (isSuccess) //Login successful if it's true
-else // Login is not successful
-});
-```
-
-``` java
-//Calling ID Capture fragment
-Fragment fragment = Amani.sharedInstance().IDCapture().start(MainActivity.this,"YOUR FRAME LAYOUT","DOC TYPE","FRONT SIDE = true / BACK SIDE = false", bitmap -> {
-
-if (bitmap! null) // ID Capture is done!
-);
-
-yourFragmentMethod(fragment);
-```
------
-
-## Manual Selfie Capture
-
-``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
-```
-
-``` java
-
-//Calling Selfie Fragment 
-Fragment fragment = Amani.sharedInstance().Selfie().start("XXX_SE_0", bitmap -> { if (bitmap != null) { // Selfie is successfully captured! } });
-
-yourFragmentMethod(fragment);
+        //Navigating the fragment with null check    
+        fragment?.let {
+            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+        }
 
 ```
 
-``` java
-//Uploading Selfie Datas 
-Amani.sharedInstance().Selfie().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
-```
------
+### Auto Selfie Capture
 
-## Auto Selfie Capture
+Auto Selfie Capture provides you with UI fragment configurations that allow the user's Selfie to be taken automatically, and tracking the result of the Selfie with upload operations. In Auto Selfie Capture, if the selfie cannot be taken after the desired time, it offers fallback with the possibility of capturing with the manual button. The sharp difference between AutoSelfieCapture and ManualSelfieCapture is that it provides real-time tracking of faces on the screen. At the same time, it checks that the face is in the desired dimensions and distance.
 
 * Add the following pom to the dependencies section of your gradle build ﬁle :
+
+> **Warning**
+> In order to use the AutoSelfieCapture module, the "tflite" definition below must be added as in the example below. If it is not added, you will get a compilation error.
+
 
 ```groovy
   aaptOptions {
     noCompress "tflite"
 }
-```        
+```  
 
-``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
+* BioLogin().AutoSelfieCapture() : Contains the necessary User Interface configurations for Auto Selfi Capture.
+
+``` kotlin
+
+      //Auto Selfie Capture User interface configuration  
+      val fragment = Amani.sharedInstance().BioLogin()
+            .AutoSelfieCapture()
+            .timeOutManualButton(30)
+            .userInterfaceColors(
+                ovalViewStartColor = R.color.white,
+                ovalViewSuccessColor = R.color.approve_green,
+                appFontColor = R.color.white,
+                manualButtonColor = R.color.white
+            )
+            .
+            userInterfaceTexts(
+                faceIsTooFarText = "Face is too far",
+                holdStableText = "Hold stable text",
+                faceNotFoundText = "Face not found text"
+            )
+            .observer(object : AutoSelfieCaptureObserver {
+                override fun cb(bitmap: Bitmap?) {
+
+                    if (bitmap != null) {
+                        //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
+                        uploadSelfie()
+                    }
+                }
+
+            })
+            .build()
+
+        //Navigating the fragment with null check    
+        fragment?.let {
+            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+        }
+
 ```
 
-``` java
+### Selfie Pose Estimation
+
+The Selfie Pose Estimation module provides you with the UI fragment configurations that allow the user's Selfie to be taken automatically as a result of the successful instructions from the user, and the upload operations and the result of the Selfie to be followed.
+
+Any number of poses can be retrieved from the user with the requestedPoseNumber() configuration. These poses are randomly determined as [UP, DOWN, RIGHT, LEFT] head movement.
+
+The selected poses are randomly provided to the user, different from the previous pose. It is taken if the user's face is in suitable conditions and all poses are successful. And it can be uploaded with the upload function.
+
+As a result of the upload function, the action of the Selfie result can be taken according to the Selfie's response result.
+
+* Add the following pom to the dependencies section of your gradle build ﬁle :
+
+> **Warning**
+> In order to use the SelfiePoseEstimation module, the "tflite" definition below must be added as in the example below. If it is not added, you will get a compilation error.
+
+
+```groovy
+  aaptOptions {
+    noCompress "tflite"
+}
+```  
+
+``` kotlin
+
+  val fragment: Fragment? = Amani.sharedInstance().BioLogin().PoseEstimation()
+            .requestedPoseNumber(1)
+            .ovalViewAnimationDurationMilSec(12000)
+            .userInterfaceColors(
+                appFontColor = R.color.white,
+                ovalViewStartColor = R.color.black,
+                ovalViewSuccessColor =  R.color.color_pink,
+                ovalViewErrorColor = R.color.color_yellow_btn,
+                alertFontTitleColor = R.color.color_pink,
+                alertFontDescriptionColor = R.color.color_pink,
+                alertFontTryAgainColor = R.color.color_pink,
+                alertBackgroundColor = R.color.black
+            )
+            .userInterfaceTexts(
+                "Face distance to camera is too much",
+                "Face is not straight as enough",
+                "Face is not inside thea area",
+                "Please, keep the device as possible as straight",
+                "Failed Title",
+                "Failed Desc",
+                "Failed Try Again"
+            )
+            .observer(object : PoseEstimationObserver{
+               override fun onSuccess(bitmap: Bitmap?) {
+                   if (bitmap != null) {
+                       //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
+                       uploadSelfie()
+                   }
+               }
+
+               override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
+                   //Pose on failure, poseNumber : $currentAttempt
+               }
+
+               override fun onError(error: Error) {
+                   //On general error
+               }
+
+           })
+            .build()
+
+        //Navigating the fragment with null check    
+        fragment?.let {
+            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+        }      
+
+```
+
+
+### Common
+
+It contains methods/functions common to three modules [Manual Selfie Capture, Auto Selfie Capture, Selfie Pose Estimation].
+
+The upload function is called when the status of the relevant module is successful. According to the model returned as a result of the upload request, it is understood whether BIOLogin is successful or not.
+
+* upload() : Uploading the desired Selfie data from related module. Usage is below;
+
+> **Warning**
+> The relevant upload method has to be called after one of the modules from BIOLogin is success (ManualSelfieCapture, AutoSelfieCapture, SelfiePoseEstimation). Otherwise, you will encounter an error with the Error() object after the upload function is called.
+
+```kotlin
+
+  Amani.sharedInstance()
+            .BioLogin()
+            .upload(
+                docType = "type_of_document example: {XXX_SE_0}",
+                token = TOKEN,
+                customerID = 9999, //Customer ID as Integer 
+                object : BioLoginUploadCallBack {
+            override fun cb(result: Boolean?, errors: Errors?) {
+                //Result must be TRUE for Success    
+            }
+        })
+
+```
+
+
+
+-----
+
+## ID Capture
+
+The IDCapture module offers you the opportunity to automatically capture the document and upload it as a result. According to the upload result, you can listen to whether the document is approved or not.
+
+* setManualCropTimeOut() : Sets the manual button of IDCapture for the situations when the AutoCapture of document is failed. When the manual crop button is enabled, the user will have chance to capture it manually for unexpected situations. Default manual crop time out value is defined as 30 seconds. If you did not call this method, it will keep going to use default value. Example usage is below;
+
+> **Note**
+> setManualCropTimeOut() -> Default Value is 30 seconds
+
+
+
+```kotlin
+        Amani.sharedInstance().IDCapture().setManualCropTimeOut(30)
+
+```
+
+
+* start() : Returns a Fragment of desired module of IDCapture 
+``` kotlin
+        val fragment: Fragment? = Amani.sharedInstance().IDCapture().start(
+            this, //Context of the Application
+            frameLayout, //FrameLayout where the current IDCapture fragment will be fit in
+            docType, // Type of the document
+            false // Boolean value for frontSide/backSide, set true for frontSide, set false for backSide
+        ) { bitmap: Bitmap?, b: Boolean?, file: File? ->
+
+            bitmap?.let {
+                //Current document is captured, upload method of current module can be triggered.
+                
+            }
+        }
+        replaceFragmentWithBackStack(R.id.id_frame_layout, fragment!!)
+```
+
+* upload() : Uploading the desired IDCapture data from related module to check result of uploaded document. Usage is below;
+
+> **Warning**
+> The relevant upload method has to be called after both the front and back sides of the document are captured. Otherwise, you will encounter an error with the Error() object after the upload function is called.
+
+``` kotlin
+     Amani.sharedInstance().IDCapture().upload(
+            this, // Context of Application/Activity
+            "type_of_document", //Type of current document
+            object : IUploadCallBack{
+                override fun cb(isSuccess: Boolean, result: String?, errors: MutableList<Errors>?) {
+                }
+            }
+        )
+
+```
+
+* getMRZ() : Fetches the data group for required scanning NFC.
+
+> **Note**
+> This method is used to capture the NFC Data group required for NFC scanning in cases where only the back side is taken. It is optional, you do not need this method if you have the data group required for NFC.
+
+```kotlin
+
+        Amani.sharedInstance().IDCapture().getMRZ(
+            type = "type_of_document",
+            onComplete = { mrz ->
+                /* Mrz model will be fetched in this section. This data model contains required values
+                for scanning NFC.
+
+                For scanning NFC with the response of Mrz request, the following values can be used in ScanNFC.start(_,_,_) function ->
+
+                    mrz.mrzBirthDate, 
+                    mrz.mrzExpiryDate, 
+                    mrz.mrzDocumentNumber
+                   
+                */
+
+            },
+            onError = {
+
+            }
+
+        )
+
+```
+
+-----
+
+## Manual Selfie Capture
+
+It includes the Fragment that allows the selfie to be taken manually from the user with the help of a button. The difference from Auto Selfie is that there is no button in Auto Selfie Capture and the selfie is taken automatically.
+
+* start() : Returns a Fragment of desired module of ManualSelfieCapture 
+
+```kotlin
+
+    //Getting the Fragment view of Selfie 
+     val fragment = Amani.sharedInstance()
+            .Selfie()
+            .start(
+                "type_of_document example: XXX_SE_0",
+                object : IFragmentCallBack{
+                    override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {
+                        //If bitmap is not null it means Selfie is taken successfuully
+                    }
+                }
+            )
+
+        //Navigating the desired Fragment view
+        fragment?.let {
+            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+        }
+
+```
+
+* upload() : Uploads the taken data from ManualSelfie
+
+> **Warning**
+> The upload method has to be called after the result of the relevant module is successful. Otherwise, you will encounter an error in the Errors() object when called.
+
+```kotlin
+//Uploading the current taken Selfie data
+        Amani.sharedInstance()
+            .Selfie()
+            .upload(
+                this,
+                "type_of_document example: XXX_SE_0",
+                object : IUploadCallBack{
+                    override fun cb(
+                        isSuccess: Boolean,
+                        result: String?,
+                        errors: MutableList<Errors>?
+                    ) {
+                        //isSuccess means the Selfie Data is uploaded
+                        //result is the result of uploaded document it should be equal "OK"
+                        // if the current Selfie has no error
+                        //If Selfie has errors, errors object will not be null anymore
+                    }
+                }
+            )
+
+```
+-----
+
+## Auto Selfie Capture
+
+Auto Selfie Capture provides you with UI fragment configurations that allow the user's Selfie to be taken automatically, and tracking the result of the Selfie with upload operations. In Auto Selfie Capture, if the selfie cannot be taken after the desired time, it offers fallback with the possibility of capturing with the manual button. The sharp difference between AutoSelfieCapture and ManualSelfieCapture is that it provides real-time tracking of faces on the screen. At the same time, it checks that the face is in the desired dimensions and distance.
+
+* Add the following pom to the dependencies section of your gradle build ﬁle :
+
+> **Warning**
+> In order to use the AutoSelfieCapture module, the "tflite" definition below must be added as in the example below. If it is not added, you will get a compilation error.
+
+
+```groovy
+  aaptOptions {
+    noCompress "tflite"
+}
+```    
+
+* start() : Returns the relavant Fragment of the Auto Selfie Capture
+
+``` kotlin
 // Preparing AutoSelfieCaptureBuilder for User Interface
-ASCBuilder ascBuilder = new ASCBuilder(
+ val ascBuilder =  ASCBuilder(
                   R.color.color_black, // Text color of message
                   20, // Text size of message
                   R.color.any_color, // Text color of counter animation.
@@ -291,28 +573,78 @@ ASCBuilder ascBuilder = new ASCBuilder(
                   "Hold stable, while taking photo", // Message texts
                   "Failed, process will restart in 3 seconds", // Message texts
                   R.color.any_color2, // Oval view color
-                  R.color.any_color3); // Success animate color 
+                  R.color.any_color3) // Success animate color 
 
-//Calling Selfie Fragment 
-Fragment fragment = Amani.sharedInstance().AutoSelfieCapture().start("XXX_SE_0", ascBuilder, frameLayout,(bitmap, onDestroyed, file) -> {
-if (bitmap != null) { // Selfie is successfully captured! } });
+//Getting the view of related Fragment
+    Amani.sharedInstance()
+            .AutoSelfieCapture()
+            .start(
+                docType = "type_of_document example: XXX_SE_0",
+                ascBuilder = ascBuilder,
+                frameLayout = frameLayout,
+                object : IFragmentCallBack {
+                    override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {
+                        //If bitmap is not null it 's succeed
+                    }
 
-yourFragmentMethod(fragment);
+                }
+
+            )
+            
+//Navigating the desired Fragment view
+        fragment?.let {
+            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+        }
+```
+
+* upload() : Uploads the taken data from AutoSelfieCapture
+
+> **Warning**
+> The upload method has to be called after the result of the relevant module is successful. Otherwise, you will encounter an error in the Errors() object when called.
+
+```kotlin
+//Uploading the current taken Selfie data
+        Amani.sharedInstance()
+            .AutoSelfieCapture()
+            .upload(
+                this,
+                "type_of_document example: XXX_SE_0",
+                object : IUploadCallBack{
+                    override fun cb(
+                        isSuccess: Boolean,
+                        result: String?,
+                        errors: MutableList<Errors>?
+                    ) {
+                        //isSuccess means the Selfie Data is uploaded
+                        //result is the result of uploaded document it should be equal "OK"
+                        // if the current Selfie has no error
+                        //If Selfie has errors, errors object will not be null anymore
+                    }
+                }
+            )
 
 ```
 
-``` java
-//Uploading Selfie Datas 
-Amani.sharedInstance().AutoSelfieCapture().upload("ACTIVITY", "DOCUMENT TYPE", (isSuccess, result) -> { if (isSuccess) //Upload is SUCCESS! });
-```
 -----
 ## Selfie Pose Estimation
 Pose Estimation creates a view that asks the user for random and certain number of head movements to confirms them from camera stream at run time that you can observer it with the customer observer pattern. You can use this view fragmentally as in other chapters.
 
-``` java
+* Add the following pom to the dependencies section of your gradle build ﬁle :
+
+> **Warning**
+> In order to use the SelfiePoseEstimation module, the "tflite" definition below must be added as in the example below. If it is not added, you may get a compilation error.
+
+
+```groovy
+  aaptOptions {
+    noCompress "tflite"
+}
+```  
+
+```kotlin
 
     // Creating custom Selfie Poese Estimation fragment to navigate it     
-    Fragment fragment = Amani.sharedInstance().SelfiePoseEstimation()
+    val fragment = Amani.sharedInstance().SelfiePoseEstimation()
             .Builder()
             .requestedPoseNumber(1)
             .ovalViewAnimationDurationMilSec(500)
@@ -335,32 +667,61 @@ Pose Estimation creates a view that asks the user for random and certain number 
                     "Failed 1",
                     "Try Again 1"
             )
-            .build(this);
+            .build(this)
 
      // Navigating the fragment with null check 
      if(fragment != null) {
          navigatetFragmentMethod(fragment);
      }       
 
-    // Creating the observer to observer PoseEstimation events    
-    private PoseEstimationObserver observer = new PoseEstimationObserver() {
-        @Override
-        public void onSuccess(@Nullable Bitmap bitmap) {
-
+    // Creating the observable to observe PoseEstimation events    
+    private val observable: PoseEstimationObserver = object : PoseEstimationObserver {
+        override fun onSuccess(bitmap: Bitmap?) {
+            bitmap?.let {
+                Log.i(TAG, "Verification is success")
+                uploadSelfie()
+            }?: run {
+                Log.e(TAG, "Verification is not success")
+            }
         }
 
-        @Override
-        public void onFailure(@NonNull OnFailurePoseEstimation reason, int currentAttempt) {
-
+        override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
+            Log.d(TAG, "onFailure: $currentAttempt")
         }
 
-        @Override
-        public void onError(@NonNull Error error) {
-
+        override fun onError(error: Error) {
+            Log.e(TAG, "onError: $error" )
         }
-    };        
-
+    }       
             
+```
+
+* upload() : Uploads the taken data from SelfiePoseEstimation
+
+> **Warning**
+> The upload method has to be called after the result of the relevant module is successful. Otherwise, you will encounter an error in the Errors() object when called.
+
+```kotlin
+//Uploading the current taken Selfie data
+        Amani.sharedInstance()
+            .SelfiePoseEstimation()
+            .upload(
+                this,
+                "type_of_document example: XXX_SE_0",
+                object : IUploadCallBack{
+                    override fun cb(
+                        isSuccess: Boolean,
+                        result: String?,
+                        errors: MutableList<Errors>?
+                    ) {
+                        //isSuccess means the Selfie Data is uploaded
+                        //result is the result of uploaded document it should be equal "OK"
+                        // if the current Selfie has no error
+                        //If Selfie has errors, errors object will not be null anymore
+                    }
+                }
+            )
+
 ```
 
 
@@ -375,7 +736,7 @@ how many document will be taken from camera.) in it.
 
 * Supported file type list; file.pdf, file.jpg, file.png, file.webp, file.bmp
 
-``` java
+```java
 //Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
 Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
 ```
@@ -706,29 +1067,5 @@ these messages below.
 -----
 
 
-## ProGuard Rule Usage ##
-    
-   * If you are using ProGuard in your application, you need to add this code block into your rules!
-   
-   ```java
--keep class ai.** {*;}
--dontwarn ai.**
--keep class datamanager.** {*;}
--dontwarn datamanager.**
--keep class networkmanager.** {*;}
--dontwarn networkmanager.**
-
--keep class org.jmrtd.** {*;}
--keep class net.sf.scuba.** {*;}
--keep class org.bouncycastle.** {*;}
--keep class org.spongycastle.** {*;}
--keep class org.ejbca.** {*;}
-
--dontwarn org.ejbca.**
--dontwarn org.bouncycastle.**
--dontwarn org.spongycastle.**
--dontwarn org.jmrtd.**
--dontwarn net.sf.scuba.**
-   ``` 
 
 
