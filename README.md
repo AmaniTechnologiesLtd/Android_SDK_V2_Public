@@ -132,7 +132,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.1.53'
+implementation 'ai.amani.android:AmaniAi:2.1.54'
 ```
 
 ### Example of usage:
@@ -140,7 +140,7 @@ implementation 'ai.amani.android:AmaniAi:2.1.53'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.1.53' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.1.54' // Add only this line
 ...
 }
 ```
@@ -190,19 +190,27 @@ A sample application that calls Amani SDK functions properly.
 ## Amani Initial-First Setup
 
 > **Warning**
-> This init method must be called once before all other methods. This is required for installation of other methods. If other methods/modules are used without calling Init, you will get a RuntimeException("Amani not initialised") error. In such cases, make sure that Amani's init method is called.
+> This init method must be called once before all other methods. This is required for installation of other methods. If other methods/modules are used without calling Init, you will get a ***RuntimeException("Amani not initialised")*** error. In such cases, make sure that Amani's init method is called.
 
 > **Note**
 > SHARED_SECRET is a key that ensures and validates the validity/security of the request in network requests. This key will be sent to you confidentially by the Amani team.
-In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations.
+In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations. 
+
+> **Note**
+> UploadSource is used to distinguish uploads from different sources. There are 3 UploadSources in the current version. These are KYC, VIDEO, PASSWORD. If UploadSource is not specified, the default is UploadSource.KYC. If you need to change UploadSource after init; You can also use the ***Amani.sharedInstance().setUploadSource()*** method.
 
 
 ```kotlin
-//Initiliazing Amani SDK with SHARED_SECRET
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET") 
-
-//Initiliazing Amani SDK without SHARED_SECRET
-Amani.init(MainActivity.this, "SERVER", null) 
+        //Amani init with only server param.
+        //When sharedSecret is not given, validity/security of the requests will not be activated.
+        Amani.init(this,"https://sandbox.amani.ai/api/v1/")
+        
+        //Amani init with server, sharedSecret, without UploadSource.
+        Amani.init(this,"https://sandbox.amani.ai/api/v1/", "SHARED_SECRET")
+        
+        //Amani init with server, sharedSecret and UploadSource params.
+        //UploadSource use cases -> [UploadSource.KYC, UploadSource.PASSWORD, UploadSource.VIDEO].
+        Amani.init(this,"https://sandbox.amani.ai/api/v1/", "SHARED_SECRET", UploadSource.KYC)
 ```
 -----
 
