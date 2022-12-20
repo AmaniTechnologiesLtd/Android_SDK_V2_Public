@@ -203,14 +203,14 @@ In cases where you do not provide SharedSecret, the Amani.init() method will sti
 ```kotlin
         //Amani init with only server param.
         //When sharedSecret is not given, validity/security of the requests will not be activated.
-        Amani.init(this,"https://sandbox.amani.ai/api/v1/")
+        Amani.init(this,"SERVER")
         
         //Amani init with server, sharedSecret, without UploadSource.
-        Amani.init(this,"https://sandbox.amani.ai/api/v1/", "SHARED_SECRET")
+        Amani.init(this,"SERVER", "SHARED_SECRET")
         
         //Amani init with server, sharedSecret and UploadSource params.
         //UploadSource use cases -> [UploadSource.KYC, UploadSource.PASSWORD, UploadSource.VIDEO].
-        Amani.init(this,"https://sandbox.amani.ai/api/v1/", "SHARED_SECRET", UploadSource.KYC)
+        Amani.init(this,"SERVER", "SHARED_SECRET", UploadSource.KYC)
 ```
 -----
 
