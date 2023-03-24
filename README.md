@@ -24,15 +24,15 @@
     - [Customer Update](#customer-update)
     - [Customer Detail](#customer-detail)
     - [Digital Signature](#digital-signature)
-    - [NFC Reading](#nfc-reading)    
-    - [Video Call](#video-call)    
+    - [NFC Reading](#nfc-reading)
+    - [Video Call](#video-call)
 - [CallBack Guideline](#callback-guideline)
     - [Upload CallBack](#upload-callback)
     - [Start CallBack](#start-callback)
-    - [Exceptions](#exceptions)    
-        - [NFC Exception](#nfc-exception)    
-          - [NFC Exception Messages](#nfc-exception-messages)   
-        - [General SDK Exceptions](general-sdk-exceptions)   
+    - [Exceptions](#exceptions)
+        - [NFC Exception](#nfc-exception)
+          - [NFC Exception Messages](#nfc-exception-messages)
+        - [General SDK Exceptions](general-sdk-exceptions)
 
 
 
@@ -102,9 +102,9 @@ application's Manifest file:
 
 
 ## ProGuard Rule Usage ##
-    
+
    * If you are using ProGuard in your application, you need to add this code block into your rules!
-   
+
    ```groovy
 -keep class ai.** {*;}
 -dontwarn ai.**
@@ -124,7 +124,7 @@ application's Manifest file:
 -dontwarn org.spongycastle.**
 -dontwarn org.jmrtd.**
 -dontwarn net.sf.scuba.**
-   ``` 
+   ```
 
 ## Integration
 
@@ -133,7 +133,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.3.0'
+implementation 'ai.amani.android:AmaniAi:2.4.0'
 ```
 
 ### Example of usage:
@@ -141,7 +141,7 @@ implementation 'ai.amani.android:AmaniAi:2.3.0'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.3.0' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.4.0' // Add only this line
 ...
 }
 ```
@@ -195,7 +195,7 @@ A sample application that calls Amani SDK functions properly.
 
 > **Note**
 > SHARED_SECRET is a key that ensures and validates the validity/security of the request in network requests. This key will be sent to you confidentially by the Amani team.
-In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations. 
+In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations.
 
 > **Note**
 > UploadSource is used to distinguish uploads from different sources. There are 3 UploadSources in the current version. These are KYC, VIDEO, PASSWORD. If UploadSource is not specified, the default is UploadSource.KYC. If you need to change UploadSource after init; You can also use the ***Amani.sharedInstance().setUploadSource()*** method.
@@ -205,10 +205,10 @@ In cases where you do not provide SharedSecret, the Amani.init() method will sti
         //Amani init with only server param.
         //When sharedSecret is not given, validity/security of the requests will not be activated.
         Amani.init(this,"SERVER")
-        
+
         //Amani init with server, sharedSecret, without UploadSource.
         Amani.init(this,"SERVER", "SHARED_SECRET")
-        
+
         //Amani init with server, sharedSecret and UploadSource params.
         //UploadSource use cases -> [UploadSource.KYC, UploadSource.PASSWORD, UploadSource.VIDEO].
         Amani.init(this,"SERVER", "SHARED_SECRET", UploadSource.KYC)
@@ -245,7 +245,7 @@ It includes the Fragment that allows the selfie to be taken manually from the us
             })
             .build()
 
-        //Navigating the fragment with null check    
+        //Navigating the fragment with null check
         fragment?.let {
             replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
         }
@@ -266,13 +266,13 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
   aaptOptions {
     noCompress "tflite"
 }
-```  
+```
 
 * BioLogin().AutoSelfieCapture() : Contains the necessary User Interface configurations for Auto Selfi Capture.
 
 ``` kotlin
 
-      //Auto Selfie Capture User interface configuration  
+      //Auto Selfie Capture User interface configuration
       val fragment = Amani.sharedInstance().BioLogin()
             .AutoSelfieCapture()
             .timeOutManualButton(30)
@@ -300,7 +300,7 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
             })
             .build()
 
-        //Navigating the fragment with null check    
+        //Navigating the fragment with null check
         fragment?.let {
             replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
         }
@@ -327,7 +327,7 @@ As a result of the upload function, the action of the Selfie result can be taken
   aaptOptions {
     noCompress "tflite"
 }
-```  
+```
 
 ``` kotlin
 
@@ -335,24 +335,33 @@ As a result of the upload function, the action of the Selfie result can be taken
             .requestedPoseNumber(1)
             .ovalViewAnimationDurationMilSec(12000)
             .userInterfaceColors(
-                appFontColor = R.color.white,
-                ovalViewStartColor = R.color.black,
-                ovalViewSuccessColor =  R.color.color_pink,
-                ovalViewErrorColor = R.color.color_yellow_btn,
-                alertFontTitleColor = R.color.color_pink,
-                alertFontDescriptionColor = R.color.color_pink,
-                alertFontTryAgainColor = R.color.color_pink,
-                alertBackgroundColor = R.color.black
+                appFontColor = R.color.your_color,
+                ovalViewStartColor = R.color.your_color,
+                ovalViewSuccessColor =  R.color.your_color,
+                ovalViewErrorColor = R.color.your_color,
+                alertFontTitleColor = R.color.your_color,
+                alertFontDescriptionColor = R.color.your_color,
+                alertFontTryAgainColor = R.color.your_color,
+                alertBackgroundColor = R.color.your_color
             )
             .userInterfaceTexts(
-                "Face distance to camera is too much",
-                "Face is not straight as enough",
-                "Face is not inside thea area",
-                "Please, keep the device as possible as straight",
-                "Failed Title",
-                "Failed Desc",
-                "Failed Try Again"
+                faceNotInside = "Face is not inside",
+                faceNotStraight = "Face is not straight",
+                faceIsTooFar = "Face is too far",
+                holdPhoneVertically = "Hold phone as vertical",
+                alertTitle = "Verification Failed",
+                alertDescription = "Verification is failed, please try again.",
+                alertTryAgain = "Try again",
+                turnDown = "Turn your head down",
+                turnLeft = "Turn your head left",
+                turnRight = "Turn your head right",
+                turnUp = "Turn your head up",
+                faceStraight = "Look as straight position to screen"
             )
+            .userInterfaceVisibilities(
+                 faceMeshVisibility = true,
+                 arrowVisibility = true
+             )
             .observer(object : PoseEstimationObserver{
                override fun onSuccess(bitmap: Bitmap?) {
                    if (bitmap != null) {
@@ -372,10 +381,10 @@ As a result of the upload function, the action of the Selfie result can be taken
            })
             .build()
 
-        //Navigating the fragment with null check    
+        //Navigating the fragment with null check
         fragment?.let {
             replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }      
+        }
 
 ```
 
@@ -398,10 +407,10 @@ The upload function is called when the status of the relevant module is successf
             .upload(
                 docType = "type_of_document example: {XXX_SE_0}",
                 token = TOKEN,
-                customerID = 9999, //Customer ID as Integer 
+                customerID = 9999, //Customer ID as Integer
                 object : BioLoginUploadCallBack {
             override fun cb(result: Boolean?, errors: Errors?) {
-                //Result must be TRUE for Success    
+                //Result must be TRUE for Success
             }
         })
 
@@ -428,7 +437,7 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 ```
 
 
-* start() : Returns a Fragment of desired module of IDCapture 
+* start() : Returns a Fragment of desired module of IDCapture
 ``` kotlin
         val fragment: Fragment? = Amani.sharedInstance().IDCapture().start(
             this, //Context of the Application
@@ -439,7 +448,7 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 
             bitmap?.let {
                 //Current document is captured, upload method of current module can be triggered.
-                
+
             }
         }
         replaceFragmentWithBackStack(R.id.id_frame_layout, fragment!!)
@@ -477,10 +486,10 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 
                 For scanning NFC with the response of Mrz request, the following values can be used in ScanNFC.start(_,_,_) function ->
 
-                    mrz.mrzBirthDate, 
-                    mrz.mrzExpiryDate, 
+                    mrz.mrzBirthDate,
+                    mrz.mrzExpiryDate,
                     mrz.mrzDocumentNumber
-                   
+
                 */
 
             },
@@ -498,11 +507,11 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 
 It includes the Fragment that allows the selfie to be taken manually from the user with the help of a button. The difference from Auto Selfie is that there is no button in Auto Selfie Capture and the selfie is taken automatically.
 
-* start() : Returns a Fragment of desired module of ManualSelfieCapture 
+* start() : Returns a Fragment of desired module of ManualSelfieCapture
 
 ```kotlin
 
-    //Getting the Fragment view of Selfie 
+    //Getting the Fragment view of Selfie
      val fragment = Amani.sharedInstance()
             .Selfie()
             .start(
@@ -564,7 +573,7 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
   aaptOptions {
     noCompress "tflite"
 }
-```    
+```
 
 * start() : Returns the relavant Fragment of the Auto Selfie Capture
 
@@ -582,7 +591,7 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
                   "Hold stable, while taking photo", // Message texts
                   "Failed, process will restart in 3 seconds", // Message texts
                   R.color.any_color2, // Oval view color
-                  R.color.any_color3) // Success animate color 
+                  R.color.any_color3) // Success animate color
 
 //Getting the view of related Fragment
     Amani.sharedInstance()
@@ -599,7 +608,7 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
                 }
 
             )
-            
+
 //Navigating the desired Fragment view
         fragment?.let {
             replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
@@ -648,42 +657,52 @@ Pose Estimation creates a view that asks the user for random and certain number 
   aaptOptions {
     noCompress "tflite"
 }
-```  
+```
 
 ```kotlin
 
-    // Creating custom Selfie Poese Estimation fragment to navigate it     
+    // Creating custom Selfie Poese Estimation fragment to navigate it
     val fragment = Amani.sharedInstance().SelfiePoseEstimation()
             .Builder()
             .requestedPoseNumber(1)
             .ovalViewAnimationDurationMilSec(500)
             .observe(observer)
             .userInterfaceColors(
-                    R.color.white,
-                    R.color.approve_green,
-                    R.color.error_red,
-                    R.color.color_white,
-                    R.color.white,
-                    R.color.white,
-                    R.color.color_pink,
-                    R.color.white)
-            .userInterfaceTexts(
-                    "Your face is not inside the area",
-                    "Your face is not straight",
-                    "Your face is too far from camera",
-                    "Please keep straight the phone",
-                    "Verification Failed 1",
-                    "Failed 1",
-                    "Try Again 1"
+                appFontColor = R.color.your_color,
+                ovalViewStartColor = R.color.your_color,
+                ovalViewSuccessColor =  R.color.your_color,
+                ovalViewErrorColor = R.color.your_color,
+                alertFontTitleColor = R.color.your_color,
+                alertFontDescriptionColor = R.color.your_color,
+                alertFontTryAgainColor = R.color.your_color,
+                alertBackgroundColor = R.color.your_color
             )
+            .userInterfaceTexts(
+                faceNotInside = "Face is not inside",
+                faceNotStraight = "Face is not straight",
+                faceIsTooFar = "Face is too far",
+                holdPhoneVertically = "Hold phone as vertical",
+                alertTitle = "Verification Failed",
+                alertDescription = "Verification is failed, please try again.",
+                alertTryAgain = "Try again",
+                turnDown = "Turn your head down",
+                turnLeft = "Turn your head left",
+                turnRight = "Turn your head right",
+                turnUp = "Turn your head up",
+                faceStraight = "Look as straight position to screen"
+            )
+            .userInterfaceVisibilities(
+                 faceMeshVisibility = true,
+                 arrowVisibility = true
+             )
             .build(this)
 
-     // Navigating the fragment with null check 
+     // Navigating the fragment with null check
      if(fragment != null) {
          navigatetFragmentMethod(fragment);
-     }       
+     }
 
-    // Creating the observable to observe PoseEstimation events    
+    // Creating the observable to observe PoseEstimation events
     private val observable: PoseEstimationObserver = object : PoseEstimationObserver {
         override fun onSuccess(bitmap: Bitmap?) {
             bitmap?.let {
@@ -701,8 +720,8 @@ Pose Estimation creates a view that asks the user for random and certain number 
         override fun onError(error: Error) {
             Log.e(TAG, "onError: $error" )
         }
-    }       
-            
+    }
+
 ```
 
 * upload() : Uploads the taken data from SelfiePoseEstimation
@@ -769,7 +788,7 @@ Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a 
 Fragment docFragment = Amani.sharedInstance().Document().start("DOC_TYPE",docBuilder, frameLayout,(docList,isSucess)->{
 
             if (isSuccess) {
-                //Uploading Generic Documents that taken from camera            
+                //Uploading Generic Documents that taken from camera
                 Amani.sharedInstance().Document().upload(this,"DOC_TYPE",(isSuccess, result, errors) -> {
                     if (isSuccess) Toast.makeText(this,"Generic Document Upload is Success", Toast.LENGTH_LONG).show();
                     else Toast.makeText(this,"Generic Document Upload is Not Success", Toast.LENGTH_SHORT).show();
@@ -802,11 +821,11 @@ Amani.sharedInstance().Document().upload(this,"TUR_ID_1",docDataList,(iSuccess,r
 
 ``` java
 // It provides to delete all files that taken from camera.
-// It must be called when the upload process is done. 
+// It must be called when the upload process is done.
 // (You can check nullability of "isSucess: Boo" in Document.start() lambda
 // expression callback to understand process of upload is done or not!)
 // Otherwise upload will be failed.
-// Also you can delete the files from given file path by yourself. 
+// Also you can delete the files from given file path by yourself.
 // It means no need to use it.
 Amani.sharedInstance().Document().deleteAllDocumentCaches();
 ```
@@ -885,35 +904,35 @@ Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a 
 * start() function example usage;
 
 ``` java
-int NUMBER_OF_SIGNATURE_WILL_BE_TAKEN = 1;                                                                        
-Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN, (bitmap, countOfSignature) -> { 
-    if (bitmap != null) {                                                                                         
-        if (NUMBER_OF_SIGNATURE_WILL_BE_TAKEN == countOfSignature) {                                              
-            Amani.sharedInstance().Signature().upload((isSuccess, result, errors) -> {                            
-                if (isSuccess) {                                                                                  
-                    Log.d(TAG, "Signature is uploaded");                                                          
-                }                                                                                                 
-                if (result != null) {                                                                             
-                    if (result.equals("OK")) {                                                                    
-                        Log.d(TAG, "Pending Review");                                                             
-                    }                                                                                             
-                }                                                                                                 
-                if (errors != null) {                                                                             
-                    if (errors.get(0) != null) {                                                                  
-                        Log.d(TAG, " Error" + errors.get(0));                                                     
-                    }                                                                                             
-                }                                                                                                 
-            });                                                                                                   
-        }                                                                                                         
-    }                                                                                                             
-});                                                                                                               
+int NUMBER_OF_SIGNATURE_WILL_BE_TAKEN = 1;
+Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN, (bitmap, countOfSignature) -> {
+    if (bitmap != null) {
+        if (NUMBER_OF_SIGNATURE_WILL_BE_TAKEN == countOfSignature) {
+            Amani.sharedInstance().Signature().upload((isSuccess, result, errors) -> {
+                if (isSuccess) {
+                    Log.d(TAG, "Signature is uploaded");
+                }
+                if (result != null) {
+                    if (result.equals("OK")) {
+                        Log.d(TAG, "Pending Review");
+                    }
+                }
+                if (errors != null) {
+                    if (errors.get(0) != null) {
+                        Log.d(TAG, " Error" + errors.get(0));
+                    }
+                }
+            });
+        }
+    }
+});
 ```
 
 
 * clean() function example usage;
 
 ``` java
-     Amani.sharedInstance().Signature().clean(); 
+     Amani.sharedInstance().Signature().clean();
 ```
 
 * upload() function example usage;
@@ -930,7 +949,7 @@ Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN
 * confirm() function example usage;
 
 ``` java
-    Amani.sharedInstance().Signature().confirm(context); 
+    Amani.sharedInstance().Signature().confirm(context);
 ```
 
 * resetCountOfSignature() function example usage;
@@ -954,7 +973,7 @@ Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a 
 
 //Starting ScanNFC Scanning
 
-@Override protected void onResume() { 
+@Override protected void onResume() {
 super.onResume();
 ScanNFCAdapter adapter = ScanNFCAdapter.getDefaultAdapter(this);
 if (adapter != null) {
@@ -967,17 +986,17 @@ adapter.enableForegroundDispatch(this, pendingIntent, null, filter);}
 
 @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); tag = intent.getExtras().getParcelable(ScanNFCAdapter.EXTRA_TAG);
 Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(),
-"BIRTH DATE" , 
-"EXPIRE DATE" , 
-"DOCUMENT NUMBER", 
+"BIRTH DATE" ,
+"EXPIRE DATE" ,
+"DOCUMENT NUMBER",
 (bitmap, isSuccess, exception) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
 ```
 
 //Uploading NFC datas
 
-```java 
-Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
-{ 
+```java
+Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) ->
+{
 } ); // It must call if ScanNFC is success.
 ```
 -----
@@ -989,9 +1008,13 @@ After the initAmani method is called and the login process is successful, it sho
 ``` java
 Amani.sharedInstance().initAmani(MainActivity.this,"ID NUMBER","TOKEN","tr",(isSuccess, errorCode) -> {
             if (isSuccess){
-                //Login successful 
+                //Login successful
                 try {
-                    startActivity(Amani.sharedInstance().VideoCall().start(getApplicationContext()));
+                    startActivity(Amani.sharedInstance().VideoCall()
+                    .geoLocation(true)
+                    .language("tr")
+                    .returnURL("SERVER_URL")
+                    .start())
                 } catch (ActivityNotFoundException e) {
                     Log.e("TAG", "Chrome not found: ");
                     // You can set any alert message to download chrome
@@ -1010,10 +1033,10 @@ you 2 parameters. You can find out what these parameters mean below.
 
 ## Upload CallBack:
 
-```java 
+```java
 //The method in front of the upload() method may vary according to the document as follows.
-Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) -> 
-{ } ); 
+Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) ->
+{ } );
 ```
 
 - uploadNFCSuccess (type: boolean): The first parameter of the upload method is always set in a
@@ -1028,12 +1051,12 @@ Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().upload(this,"DOCUMENT TYPE
 The return CallBack of the start function contains one parameter, except NFC, and two in NFC. The
 meanings of these parameters are below.
 
-```java 
+```java
 //The method in front of the start() method may vary according to the document as follows.
 Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().start(tag, getApplicationContext(),
-"BIRTH DATE" , 
-"EXPIRE DATE" , 
-"DOCUMENT NUMBER", 
+"BIRTH DATE" ,
+"EXPIRE DATE" ,
+"DOCUMENT NUMBER",
 (bitmap, isSuccess) -> { }
 ```
 
@@ -1046,8 +1069,8 @@ Amani.sharedInstance().ScanNFC()/IDCapture()/Selfie().start(tag, getApplicationC
 
 ### NFC Exception:
 
-```java 
-...NFC().start("firstParam","secondParam,"thirdParam",(bitmap, isSuccess, exception)) 
+```java
+...NFC().start("firstParam","secondParam,"thirdParam",(bitmap, isSuccess, exception))
 ```
 
 The exception string in the NFC function's return callback returns an error message. You can find
@@ -1056,23 +1079,23 @@ these messages below.
 
 ### NFC Exception Messages:
 
-| Exceptions | Possible Cases  |  
-| ------- | --- | 
-| "Tag was lost" | Situations such as moving the ID during scanning or interrupting the scanning. | 
-| "Failed to connect" | In cases where the connection is disconnected or the ID is removed from the device for some reason during the initial scan startup. | 
-| "Invalid key" | Using incorrect MRZ data or incorrect input states. | 
-| "General exception" | Instant or general exceptions due to device or ID card. | 
-| "Biometric photo not found" | Situations such as the inability to receive the biometric photo from the NFC chip due to identity or device. | 
+| Exceptions | Possible Cases  |
+| ------- | --- |
+| "Tag was lost" | Situations such as moving the ID during scanning or interrupting the scanning. |
+| "Failed to connect" | In cases where the connection is disconnected or the ID is removed from the device for some reason during the initial scan startup. |
+| "Invalid key" | Using incorrect MRZ data or incorrect input states. |
+| "General exception" | Instant or general exceptions due to device or ID card. |
+| "Biometric photo not found" | Situations such as the inability to receive the biometric photo from the NFC chip due to identity or device. |
 
 
 ### General SDK Exceptions:
 
-| Exception Codes | Cases  |  
-| ------- | --- | 
-| 10500 | No Connectivity Exception | 
-| 10505 | General Connection Error | 
-| 10506 | AppConfig Error | 
-| -HttpErrorCodes- | Http Response Exception | 
+| Exception Codes | Cases  |
+| ------- | --- |
+| 10500 | No Connectivity Exception |
+| 10505 | General Connection Error |
+| 10506 | AppConfig Error |
+| -HttpErrorCodes- | Http Response Exception |
 -----
 
 
