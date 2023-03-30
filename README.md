@@ -133,7 +133,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.4.0'
+implementation 'ai.amani.android:AmaniAi:2.5.0'
 ```
 
 ### Example of usage:
@@ -141,7 +141,7 @@ implementation 'ai.amani.android:AmaniAi:2.4.0'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.4.0' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.5.0' // Add only this line
 ...
 }
 ```
@@ -358,10 +358,21 @@ As a result of the upload function, the action of the Selfie result can be taken
                 turnUp = "Turn your head up",
                 faceStraight = "Look as straight position to screen"
             )
+            .userInterfaceDrawables(
+                mainGuideStraight = R.drawable.your_drawable,
+                mainGuideUp = R.drawable.your_drawable,
+                mainGuideRight = R.drawable.your_drawable,
+                mainGuideLeft = R.drawable.your_drawable,
+                mainGuideDown = R.drawable.your_drawable,
+                secondaryGuideUp = R.drawable.your_drawable,
+                secondaryGuideRight = R.drawable.your_drawable,
+                secondaryGuideDown = R.drawable.your_drawable,
+                secondaryGuideLeft = R.drawable.your_drawable
+            )
             .userInterfaceVisibilities(
-                 faceMeshVisibility = true,
-                 arrowVisibility = true
-             )
+                mainGuideVisibility = true,
+                secondaryGuideVisibility = true
+            )
             .observer(object : PoseEstimationObserver{
                override fun onSuccess(bitmap: Bitmap?) {
                    if (bitmap != null) {
@@ -691,10 +702,21 @@ Pose Estimation creates a view that asks the user for random and certain number 
                 turnUp = "Turn your head up",
                 faceStraight = "Look as straight position to screen"
             )
+            .userInterfaceDrawables(
+                mainGuideStraight = R.drawable.your_drawable,
+                mainGuideUp = R.drawable.your_drawable,
+                mainGuideRight = R.drawable.your_drawable,
+                mainGuideLeft = R.drawable.your_drawable,
+                mainGuideDown = R.drawable.your_drawable,
+                secondaryGuideUp = R.drawable.your_drawable,
+                secondaryGuideRight = R.drawable.your_drawable,
+                secondaryGuideDown = R.drawable.your_drawable,
+                secondaryGuideLeft = R.drawable.your_drawable
+            )
             .userInterfaceVisibilities(
-                 faceMeshVisibility = true,
-                 arrowVisibility = true
-             )
+                mainGuideVisibility = true,
+                secondaryGuideVisibility = true
+            )
             .build(this)
 
      // Navigating the fragment with null check
