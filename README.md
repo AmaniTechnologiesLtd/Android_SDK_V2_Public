@@ -12,10 +12,6 @@
 - [Amani SDK Usage](#amani-sdk-usage)
     - [Amani Initial-First Setup](#amani-initial-first-setup)
     - [BIO Login](#bio-login)
-        - [Manual Selfie Capture](#manual-selfie-capture)
-        - [Auto Selfie Capture](#auto-selfie-capture)
-        - [Selfie Pose Estimation](#selfie-pose-estimation)
-        - [Common](#common)
     - [ID Capture](#id-capture)
     - [Manual Selfie Capture](#manual-selfie-capture)
     - [Auto Selfie Capture](#auto-selfie-capture)
@@ -30,9 +26,6 @@
     - [Upload CallBack](#upload-callback)
     - [Start CallBack](#start-callback)
     - [Exceptions](#exceptions)
-        - [NFC Exception](#nfc-exception)
-          - [NFC Exception Messages](#nfc-exception-messages)
-        - [General SDK Exceptions](general-sdk-exceptions)
 
 
 
