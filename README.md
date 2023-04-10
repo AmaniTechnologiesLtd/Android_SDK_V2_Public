@@ -190,14 +190,6 @@ A sample application that calls Amani SDK functions properly.
 > SHARED_SECRET is a key that ensures and validates the validity/security of the request in network requests. This key will be sent to you confidentially by the Amani team.
 In cases where you do not provide SharedSecret, the Amani.init() method will still work without any problems. However, requests made in the upload methods will be unsigned. Use SharedSecret to avoid such security situations.
 
-| Upload Sources as enum               |                |
-|------------------------------| 
-| UploadSource.KYC             | 
-| UploadSource.PASSWORD        | 
-| UploadSource.VIDEO           | 
-| UploadSource.PASSWORD_UPDATE | 
-| UploadSource.PHONE_UPDATE    | 
-
 | Upload Sources      | String Equivalents |
 |------------------------------|--------------------|
 | UploadSource.KYC             | Kyc                |
