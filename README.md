@@ -183,6 +183,11 @@ A sample application that calls Amani SDK functions properly.
 
 ## Amani Initial-First Setup
 
+There are two different functions required in the setup. init() and initAmani(). The init() function provides the overall SDK installation before the application is even up. The initAmani() function can be used at any step/time when a user is desired to be created in the Amani system after the application is up. For the use of all other functions (uploads, fragmental view structures) the initAmani() function must return success.
+
+### init() :
+Before the application stands up, it is called once in the application layer, as in the example.
+
 > **Warning**
 > This init method must be called once before all other methods. This is required for installation of other methods. If other methods/modules are used without calling Init, you will get a ***RuntimeException("Amani not initialised")*** error. In such cases, make sure that Amani's init method is called.
 
@@ -199,16 +204,16 @@ In cases where you do not provide SharedSecret, the Amani.init() method will sti
 | UploadSource.PHONE_UPDATE    | Phone_update       |
 
 ```kotlin
-        //Amani init with only server param.
-        //When sharedSecret is not given, validity/security of the requests will not be activated.
-        Amani.init(this,"SERVER")
+//Amani init with only server param.
+//When sharedSecret is not given, validity/security of the requests will not be activated.
+Amani.init(this,"SERVER")
 
-        //Amani init with server, sharedSecret, without UploadSource.
-        Amani.init(this,"SERVER", "SHARED_SECRET")
+//Amani init with server, sharedSecret, without UploadSource.
+Amani.init(this,"SERVER", "SHARED_SECRET")
 
-        //Amani init with server, sharedSecret and UploadSource params.
-        //UploadSource use cases -> [UploadSource.KYC, UploadSource.PASSWORD, UploadSource.VIDEO, UploadSource.PHONE_UPDATE, PHONE_UPDATE.PASSWORD_UPDATE ].
-        Amani.init(this,"SERVER", "SHARED_SECRET", UploadSource.KYC)
+//Amani init with server, sharedSecret and UploadSource params.
+//UploadSource use cases -> [UploadSource.KYC, UploadSource.PASSWORD, UploadSource.VIDEO, UploadSource.PHONE_UPDATE, PHONE_UPDATE.PASSWORD_UPDATE ].
+Amani.init(this,"SERVER", "SHARED_SECRET", UploadSource.KYC)        
 ```
 
 > **Note**
@@ -217,12 +222,36 @@ In cases where you do not provide SharedSecret, the Amani.init() method will sti
 > **Warning**
 > To set upload source as string, be sure that you use the string equivalent from the table
 ```kotlin
-        //Setting the UploadSource as enum    
-        Amani.sharedInstance().setUploadSource(UploadSource.KYC)
+//Setting the UploadSource as enum    
+Amani.sharedInstance().setUploadSource(UploadSource.KYC)
 
-        //Setting the UploadSource as string
-        Amani.sharedInstance().setUploadSource("Kyc") 
+//Setting the UploadSource as string
+Amani.sharedInstance().setUploadSource("Kyc")
+
 ```
+
+### initAmani():
+After the application stands up, the initAmani() function can be called in the flow of a desired screen, depending on the result of initAmani() function other modules will be also available to use. If isSuccess is true as a result of the initAmani() request, other modules can be used. Otherwise, you will get an error from the callback result of the current module. It is enough for initAmani() to be successful once during the lifecycle. The application must be called again when the life cycle ends and a new life cycle starts. (In cases where the user closes and opens the application)
+
+```kotlin
+Amani.sharedInstance()
+  .initAmani(
+    this, 
+    "ID_NUMBER", 
+    "EMAIL", 
+    "PASSWORD", 
+    "LANGUAGE e.g. tr") 
+  { isSuccess: Boolean, errorCode: Int? ->
+
+    if (isSuccess) {
+        //The request is successful, all other modules are ready to use.
+    } else {
+        //The request failed, due to error : $errorCode, other modules cannot
+        //Other modules cannot be used until the request is successful.
+    }
+}
+```
+
 -----
 
 ## BIO Login
@@ -234,31 +263,33 @@ It includes the Fragment that allows the selfie to be taken manually from the us
 * BioLogin().ManualSelfieCapture() : Contains the necessary User Interface configurations for Manual Selfie
 
 ```kotlin
-        //Manual Selfie Capture User interface configuration
-        val fragment: Fragment? = Amani.sharedInstance().BioLogin().ManualSelfieCapture()
-            .userInterfaceColors(
-                appFontColor = R.color.white,
-                manualButtonColor = R.color.white,
-                ovalViewColor = R.color.white,
-                appBackgroundColor = R.color.white
-            )
-            .userInterfaceTexts(
-                "PLease be sure your face is inside the area!"
-            )
-            .observer(object : ManualSelfieCaptureObserver {
-                override fun cb(bitmap: Bitmap?) {
-                   if (bitmap != null) {
-                       //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
-                       uploadSelfie()
-                   }
-                }
-            })
-            .build()
+//Manual Selfie Capture User interface configuration
+val fragment: Fragment? = Amani.sharedInstance()
+  .BioLogin()
+  .ManualSelfieCapture()
+  .userInterfaceColors(
+    appFontColor = R.color.white,
+    manualButtonColor = R.color.white,
+    ovalViewColor = R.color.white,
+    appBackgroundColor = R.color.white
+  )
+  .userInterfaceTexts(
+    "PLease be sure your face is inside the area!"
+  )
+  .observer(object : ManualSelfieCaptureObserver {
+    override fun cb(bitmap: Bitmap?) {
+      if (bitmap != null) {
+        //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
+        uploadSelfie()
+      }
+    }
+  })
+  .build()
 
-        //Navigating the fragment with null check
-        fragment?.let {
-            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }
+//Navigating the fragment with null check
+fragment?.let {
+  replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
+}        
 
 ```
 
@@ -281,40 +312,39 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
 * BioLogin().AutoSelfieCapture() : Contains the necessary User Interface configurations for Auto Selfi Capture.
 
 ``` kotlin
-
-      //Auto Selfie Capture User interface configuration
-      val fragment = Amani.sharedInstance().BioLogin()
-            .AutoSelfieCapture()
-            .timeOutManualButton(30)
-            .userInterfaceColors(
-                ovalViewStartColor = R.color.white,
-                ovalViewSuccessColor = R.color.approve_green,
-                appFontColor = R.color.white,
-                manualButtonColor = R.color.white
-            )
-            .
-            userInterfaceTexts(
-                faceIsTooFarText = "Face is too far",
-                holdStableText = "Hold stable text",
-                faceNotFoundText = "Face not found text"
-            )
-            .observer(object : AutoSelfieCaptureObserver {
-                override fun cb(bitmap: Bitmap?) {
-
-                    if (bitmap != null) {
-                        //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
-                        uploadSelfie()
-                    }
-                }
-
-            })
-            .build()
-
-        //Navigating the fragment with null check
-        fragment?.let {
-            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }
-
+//Auto Selfie Capture User interface configuration
+val fragment = Amani.sharedInstance()
+    .BioLogin()                                                                     
+    .AutoSelfieCapture()                                                                                             
+    .timeOutManualButton(30)                                                                                         
+    .userInterfaceColors(                                                                                            
+        ovalViewStartColor = R.color.white,                                                                          
+        ovalViewSuccessColor = R.color.approve_green,                                                                
+        appFontColor = R.color.white,                                                                                
+        manualButtonColor = R.color.white                                                                            
+    )                                                                                                                
+    .                                                                                                                
+    userInterfaceTexts(                                                                                              
+        faceIsTooFarText = "Face is too far",                                                                        
+        holdStableText = "Hold stable text",                                                                         
+        faceNotFoundText = "Face not found text"                                                                     
+    )                                                                                                                
+    .observer(object : AutoSelfieCaptureObserver {                                                                   
+        override fun cb(bitmap: Bitmap?) {                                                                           
+                                                                                                             
+            if (bitmap != null) {                                                                                    
+                //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.              
+                uploadSelfie()                                                                                       
+            }                                                                                                        
+        }                                                                                                            
+                                                                                                             
+    })                                                                                                               
+    .build()                                                                                                         
+                                                                                                             
+//Navigating the fragment with null check                                                                            
+fragment?.let {                                                                                                      
+    replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)                                                     
+}                                                                                                                    
 ```
 
 ### Selfie Pose Estimation
@@ -340,73 +370,73 @@ As a result of the upload function, the action of the Selfie result can be taken
 ```
 
 ``` kotlin
-
-  val fragment: Fragment? = Amani.sharedInstance().BioLogin().PoseEstimation()
-            .requestedPoseNumber(1)
-            .ovalViewAnimationDurationMilSec(12000)
-            .userInterfaceColors(
-                appFontColor = R.color.your_color,
-                ovalViewStartColor = R.color.your_color,
-                ovalViewSuccessColor =  R.color.your_color,
-                ovalViewErrorColor = R.color.your_color,
-                alertFontTitleColor = R.color.your_color,
-                alertFontDescriptionColor = R.color.your_color,
-                alertFontTryAgainColor = R.color.your_color,
-                alertBackgroundColor = R.color.your_color
-            )
-            .userInterfaceTexts(
-                faceNotInside = "Face is not inside",
-                faceNotStraight = "Face is not straight",
-                faceIsTooFar = "Face is too far",
-                holdPhoneVertically = "Hold phone as vertical",
-                alertTitle = "Verification Failed",
-                alertDescription = "Verification is failed, please try again.",
-                alertTryAgain = "Try again",
-                turnDown = "Turn your head down",
-                turnLeft = "Turn your head left",
-                turnRight = "Turn your head right",
-                turnUp = "Turn your head up",
-                faceStraight = "Look as straight position to screen"
-            )
-            .userInterfaceDrawables(
-                mainGuideStraight = R.drawable.your_drawable,
-                mainGuideUp = R.drawable.your_drawable,
-                mainGuideRight = R.drawable.your_drawable,
-                mainGuideLeft = R.drawable.your_drawable,
-                mainGuideDown = R.drawable.your_drawable,
-                secondaryGuideUp = R.drawable.your_drawable,
-                secondaryGuideRight = R.drawable.your_drawable,
-                secondaryGuideDown = R.drawable.your_drawable,
-                secondaryGuideLeft = R.drawable.your_drawable
-            )
-            .userInterfaceVisibilities(
-                mainGuideVisibility = true,
-                secondaryGuideVisibility = true
-            )
-            .observer(object : PoseEstimationObserver{
-               override fun onSuccess(bitmap: Bitmap?) {
-                   if (bitmap != null) {
-                       //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.
-                       uploadSelfie()
-                   }
-               }
-
-               override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-                   //Pose on failure, poseNumber : $currentAttempt
-               }
-
-               override fun onError(error: Error) {
-                   //On general error
-               }
-
-           })
-            .build()
-
-        //Navigating the fragment with null check
-        fragment?.let {
-            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }
-
+val fragment: Fragment? = Amani.sharedInstance()
+    .BioLogin()
+    .PoseEstimation()                                        
+    .requestedPoseNumber(1)                                                                                     
+    .ovalViewAnimationDurationMilSec(12000)                                                                     
+    .userInterfaceColors(                                                                                       
+        appFontColor = R.color.your_color,                                                                      
+        ovalViewStartColor = R.color.your_color,                                                                
+        ovalViewSuccessColor =  R.color.your_color,                                                             
+        ovalViewErrorColor = R.color.your_color,                                                                
+        alertFontTitleColor = R.color.your_color,                                                               
+        alertFontDescriptionColor = R.color.your_color,                                                         
+        alertFontTryAgainColor = R.color.your_color,                                                            
+        alertBackgroundColor = R.color.your_color                                                               
+    )                                                                                                           
+    .userInterfaceTexts(                                                                                        
+        faceNotInside = "Face is not inside",                                                                   
+        faceNotStraight = "Face is not straight",                                                               
+        faceIsTooFar = "Face is too far",                                                                       
+        holdPhoneVertically = "Hold phone as vertical",                                                         
+        alertTitle = "Verification Failed",                                                                     
+        alertDescription = "Verification is failed, please try again.",                                         
+        alertTryAgain = "Try again",                                                                            
+        turnDown = "Turn your head down",                                                                       
+        turnLeft = "Turn your head left",                                                                       
+        turnRight = "Turn your head right",                                                                     
+        turnUp = "Turn your head up",                                                                           
+        faceStraight = "Look as straight position to screen"                                                    
+    )                                                                                                           
+    .userInterfaceDrawables(                                                                                    
+        mainGuideStraight = R.drawable.your_drawable,                                                           
+        mainGuideUp = R.drawable.your_drawable,                                                                 
+        mainGuideRight = R.drawable.your_drawable,                                                              
+        mainGuideLeft = R.drawable.your_drawable,                                                               
+        mainGuideDown = R.drawable.your_drawable,                                                               
+        secondaryGuideUp = R.drawable.your_drawable,                                                            
+        secondaryGuideRight = R.drawable.your_drawable,                                                         
+        secondaryGuideDown = R.drawable.your_drawable,                                                          
+        secondaryGuideLeft = R.drawable.your_drawable                                                           
+    )                                                                                                           
+    .userInterfaceVisibilities(                                                                                 
+        mainGuideVisibility = true,                                                                             
+        secondaryGuideVisibility = true                                                                         
+    )                                                                                                           
+    .observer(object : PoseEstimationObserver{                                                                  
+       override fun onSuccess(bitmap: Bitmap?) {                                                                
+           if (bitmap != null) {                                                                                
+               //Selfie data is taken, upload method can be triggered now to check result of BIOLogin.          
+               uploadSelfie()                                                                                   
+           }                                                                                                    
+       }                                                                                                        
+                                                                                                                
+       override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {                         
+           //Pose on failure, poseNumber : $currentAttempt                                                      
+       }                                                                                                        
+                                                                                                                
+       override fun onError(error: Error) {                                                                   
+           //On general error                                                                                   
+       }                                                                                                        
+                                                                                                                
+   })                                                                                                         
+    .build()                                                                                                    
+                                                                                                                
+//Navigating the fragment with null check                                                                     
+fragment?.let {                                                                                                 
+    replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)                                                
+}                                                                                                               
 ```
 
 
@@ -422,19 +452,17 @@ The upload function is called when the status of the relevant module is successf
 > The relevant upload method has to be called after one of the modules from BIOLogin is success (ManualSelfieCapture, AutoSelfieCapture, SelfiePoseEstimation). Otherwise, you will encounter an error with the Error() object after the upload function is called.
 
 ```kotlin
-
-  Amani.sharedInstance()
-            .BioLogin()
-            .upload(
-                docType = "type_of_document example: {XXX_SE_0}",
-                token = TOKEN,
-                customerID = 9999, //Customer ID as Integer
-                object : BioLoginUploadCallBack {
-            override fun cb(result: Boolean?, errors: Errors?) {
-                //Result must be TRUE for Success
-            }
-        })
-
+Amani.sharedInstance()                                          
+      .BioLogin()                                             
+          .upload(                                                
+              docType = "type_of_document example: {XXX_SE_0}",   
+              token = TOKEN,                                      
+              customerID = 9999, //Customer ID as Integer         
+              object : BioLoginUploadCallBack {                   
+          override fun cb(result: Boolean?, errors: Errors?) {    
+              //Result must be TRUE for Success                   
+          }                                                       
+      })                                                          
 ```
 
 
@@ -460,16 +488,16 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 
 * start() : Returns a Fragment of desired module of IDCapture
 ``` kotlin
-        val fragment: Fragment? = Amani.sharedInstance().IDCapture().start(
+        val fragment: Fragment? = Amani.sharedInstance()
+        .IDCapture()
+        .start(
             this, //Context of the Application
             frameLayout, //FrameLayout where the current IDCapture fragment will be fit in
             docType, // Type of the document
             false // Boolean value for frontSide/backSide, set true for frontSide, set false for backSide
         ) { bitmap: Bitmap?, b: Boolean?, file: File? ->
-
             bitmap?.let {
                 //Current document is captured, upload method of current module can be triggered.
-
             }
         }
         replaceFragmentWithBackStack(R.id.id_frame_layout, fragment!!)
@@ -481,7 +509,9 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 > The relevant upload method has to be called after both the front and back sides of the document are captured. Otherwise, you will encounter an error with the Error() object after the upload function is called.
 
 ``` kotlin
-     Amani.sharedInstance().IDCapture().upload(
+     Amani.sharedInstance()
+     .IDCapture()
+     .upload(
             this, // Context of Application/Activity
             "type_of_document", //Type of current document
             object : IUploadCallBack{
@@ -489,7 +519,6 @@ The IDCapture module offers you the opportunity to automatically capture the doc
                 }
             }
         )
-
 ```
 
 * getMRZ() : Fetches the data group for required scanning NFC.
@@ -498,27 +527,28 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 > This method is used to capture the NFC Data group required for NFC scanning in cases where only the back side is taken. It is optional, you do not need this method if you have the data group required for NFC.
 
 ```kotlin
-
-        Amani.sharedInstance().IDCapture().getMRZ(
-            type = "type_of_document",
-            onComplete = { mrz ->
-                /* Mrz model will be fetched in this section. This data model contains required values
-                for scanning NFC.
-
-                For scanning NFC with the response of Mrz request, the following values can be used in ScanNFC.start(_,_,_) function ->
-
-                    mrz.mrzBirthDate,
-                    mrz.mrzExpiryDate,
-                    mrz.mrzDocumentNumber
-
-                */
-
-            },
-            onError = {
-
-            }
-
-        )
+Amani.sharedInstance()
+  .IDCapture()
+  .getMRZ(                                                                                     
+    type = "type_of_document",                                                                                                         
+    onComplete = { mrz ->                                                                                                              
+        /* Mrz model will be fetched in this section. This data model contains required values                                         
+        for scanning NFC.                                                                                                              
+                                                                                                                                       
+        For scanning NFC with the response of Mrz request, the following values can be used in ScanNFC.start(_,_,_) function ->
+                                                                                                                                       
+            mrz.mrzBirthDate,                                                                                                  
+            mrz.mrzExpiryDate,                                                                                                         
+            mrz.mrzDocumentNumber                                                                                                      
+                                                                                                                                       
+        */                                                                                                                     
+                                                                                                                                       
+    },                                                                                                                         
+    onError = {                                                                                                                        
+       //Error handling here                                                                                                                              
+    }                                                                                                                                                                                                                                                           
+)                                                                                                                              
+        
 
 ```
 
@@ -531,24 +561,22 @@ It includes the Fragment that allows the selfie to be taken manually from the us
 * start() : Returns a Fragment of desired module of ManualSelfieCapture
 
 ```kotlin
-
-    //Getting the Fragment view of Selfie
-     val fragment = Amani.sharedInstance()
-            .Selfie()
-            .start(
-                "type_of_document example: XXX_SE_0",
-                object : IFragmentCallBack{
-                    override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {
-                        //If bitmap is not null it means Selfie is taken successfuully
-                    }
-                }
-            )
-
-        //Navigating the desired Fragment view
-        fragment?.let {
-            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }
-
+//Getting the Fragment view of Selfie                                                           
+ val fragment = Amani.sharedInstance()                                                              
+        .Selfie()                                                                                   
+        .start(                                                                                     
+            "type_of_document example: XXX_SE_0",                                                   
+            object : IFragmentCallBack{                                                             
+                override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {    
+                    //If bitmap is not null it means Selfie is taken successfuully                  
+                }                                                                                   
+            }                                                                                       
+        )                                                                                           
+                                                                                                    
+    //Navigating the desired Fragment view                                                      
+    fragment?.let {                                                                                 
+        replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)                                
+    }                                                                                               
 ```
 
 * upload() : Uploads the taken data from ManualSelfie
@@ -558,25 +586,24 @@ It includes the Fragment that allows the selfie to be taken manually from the us
 
 ```kotlin
 //Uploading the current taken Selfie data
-        Amani.sharedInstance()
-            .Selfie()
-            .upload(
-                this,
-                "type_of_document example: XXX_SE_0",
-                object : IUploadCallBack{
-                    override fun cb(
-                        isSuccess: Boolean,
-                        result: String?,
-                        errors: MutableList<Errors>?
-                    ) {
-                        //isSuccess means the Selfie Data is uploaded
-                        //result is the result of uploaded document it should be equal "OK"
-                        // if the current Selfie has no error
-                        //If Selfie has errors, errors object will not be null anymore
-                    }
-                }
-            )
-
+Amani.sharedInstance()                                                                     
+    .Selfie()                                                                              
+    .upload(                                                                               
+        this,                                                                              
+        "type_of_document example: XXX_SE_0",                                              
+        object : IUploadCallBack{                                                          
+            override fun cb(                                                               
+                isSuccess: Boolean,                                                        
+                result: String?,                                                           
+                errors: MutableList<Errors>?                                               
+            ) {                                                                            
+                //isSuccess means the Selfie Data is uploaded                              
+                //result is the result of uploaded document it should be equal "OK"        
+                // if the current Selfie has no error                                      
+                //If Selfie has errors, errors object will not be null anymore             
+            }                                                                              
+        }                                                                                  
+    )                                                                                      
 ```
 -----
 
@@ -591,7 +618,7 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
 
 
 ```groovy
-  aaptOptions {
+aaptOptions {
     noCompress "tflite"
 }
 ```
@@ -615,25 +642,23 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
                   R.color.any_color3) // Success animate color
 
 //Getting the view of related Fragment
-    Amani.sharedInstance()
-            .AutoSelfieCapture()
-            .start(
-                docType = "type_of_document example: XXX_SE_0",
-                ascBuilder = ascBuilder,
-                frameLayout = frameLayout,
-                object : IFragmentCallBack {
-                    override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {
-                        //If bitmap is not null it 's succeed
-                    }
-
-                }
-
-            )
-
+Amani.sharedInstance()                                                                              
+        .AutoSelfieCapture()                                                                        
+        .start(                                                                                     
+            docType = "type_of_document example: XXX_SE_0",                                         
+            ascBuilder = ascBuilder,                                                                
+            frameLayout = frameLayout,                                                              
+            object : IFragmentCallBack {                                                            
+                override fun cb(bitmap: Bitmap?, manualButtonActivated: Boolean?, file: File?) {    
+                    //If bitmap is not null it 's succeed                                           
+                }                                                                                                                                                                                   
+            }                                                                                                                                                                         
+        )                                                                                           
+                                                                                                
 //Navigating the desired Fragment view
-        fragment?.let {
-            replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)
-        }
+fragment?.let {                                                          
+    replaceFragmentWithBackStack(R.id.frame_pose_estimation, it)         
+}                                                                        
 ```
 
 * upload() : Uploads the taken data from AutoSelfieCapture
@@ -643,25 +668,24 @@ Auto Selfie Capture provides you with UI fragment configurations that allow the 
 
 ```kotlin
 //Uploading the current taken Selfie data
-        Amani.sharedInstance()
-            .AutoSelfieCapture()
-            .upload(
-                this,
-                "type_of_document example: XXX_SE_0",
-                object : IUploadCallBack{
-                    override fun cb(
-                        isSuccess: Boolean,
-                        result: String?,
-                        errors: MutableList<Errors>?
-                    ) {
-                        //isSuccess means the Selfie Data is uploaded
-                        //result is the result of uploaded document it should be equal "OK"
-                        // if the current Selfie has no error
-                        //If Selfie has errors, errors object will not be null anymore
-                    }
-                }
-            )
-
+Amani.sharedInstance()                                                                     
+    .AutoSelfieCapture()                                                                   
+    .upload(                                                                               
+        this,                                                                              
+        "type_of_document example: XXX_SE_0",                                              
+        object : IUploadCallBack{                                                          
+            override fun cb(                                                               
+                isSuccess: Boolean,                                                        
+                result: String?,                                                           
+                errors: MutableList<Errors>?                                               
+            ) {                                                                            
+                //isSuccess means the Selfie Data is uploaded                              
+                //result is the result of uploaded document it should be equal "OK"        
+                // if the current Selfie has no error                                      
+                //If Selfie has errors, errors object will not be null anymore             
+            }                                                                              
+        }                                                                                  
+    )                                                                                      
 ```
 
 -----
@@ -681,79 +705,77 @@ Pose Estimation creates a view that asks the user for random and certain number 
 ```
 
 ```kotlin
-
-    // Creating custom Selfie Poese Estimation fragment to navigate it
-    val fragment = Amani.sharedInstance().SelfiePoseEstimation()
-            .Builder()
-            .requestedPoseNumber(1)
-            .ovalViewAnimationDurationMilSec(500)
-            .observe(observer)
-            .userInterfaceColors(
-                appFontColor = R.color.your_color,
-                ovalViewStartColor = R.color.your_color,
-                ovalViewSuccessColor =  R.color.your_color,
-                ovalViewErrorColor = R.color.your_color,
-                alertFontTitleColor = R.color.your_color,
-                alertFontDescriptionColor = R.color.your_color,
-                alertFontTryAgainColor = R.color.your_color,
-                alertBackgroundColor = R.color.your_color
-            )
-            .userInterfaceTexts(
-                faceNotInside = "Face is not inside",
-                faceNotStraight = "Face is not straight",
-                faceIsTooFar = "Face is too far",
-                holdPhoneVertically = "Hold phone as vertical",
-                alertTitle = "Verification Failed",
-                alertDescription = "Verification is failed, please try again.",
-                alertTryAgain = "Try again",
-                turnDown = "Turn your head down",
-                turnLeft = "Turn your head left",
-                turnRight = "Turn your head right",
-                turnUp = "Turn your head up",
-                faceStraight = "Look as straight position to screen"
-            )
-            .userInterfaceDrawables(
-                mainGuideStraight = R.drawable.your_drawable,
-                mainGuideUp = R.drawable.your_drawable,
-                mainGuideRight = R.drawable.your_drawable,
-                mainGuideLeft = R.drawable.your_drawable,
-                mainGuideDown = R.drawable.your_drawable,
-                secondaryGuideUp = R.drawable.your_drawable,
-                secondaryGuideRight = R.drawable.your_drawable,
-                secondaryGuideDown = R.drawable.your_drawable,
-                secondaryGuideLeft = R.drawable.your_drawable
-            )
-            .userInterfaceVisibilities(
-                mainGuideVisibility = true,
-                secondaryGuideVisibility = true
-            )
-            .build(this)
-
-     // Navigating the fragment with null check
-     if(fragment != null) {
-         navigatetFragmentMethod(fragment);
-     }
-
-    // Creating the observable to observe PoseEstimation events
-    private val observable: PoseEstimationObserver = object : PoseEstimationObserver {
-        override fun onSuccess(bitmap: Bitmap?) {
-            bitmap?.let {
-                Log.i(TAG, "Verification is success")
-                uploadSelfie()
-            }?: run {
-                Log.e(TAG, "Verification is not success")
-            }
-        }
-
-        override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {
-            Log.d(TAG, "onFailure: $currentAttempt")
-        }
-
-        override fun onError(error: Error) {
-            Log.e(TAG, "onError: $error" )
-        }
-    }
-
+// Creating custom Selfie Poese Estimation fragment to navigate it                              
+val fragment = Amani.sharedInstance().SelfiePoseEstimation()                                        
+        .Builder()                                                                                  
+        .requestedPoseNumber(1)                                                                     
+        .ovalViewAnimationDurationMilSec(500)                                                       
+        .observe(observer)                                                                          
+        .userInterfaceColors(                                                                       
+            appFontColor = R.color.your_color,                                                      
+            ovalViewStartColor = R.color.your_color,                                                
+            ovalViewSuccessColor =  R.color.your_color,                                             
+            ovalViewErrorColor = R.color.your_color,                                                
+            alertFontTitleColor = R.color.your_color,                                               
+            alertFontDescriptionColor = R.color.your_color,                                         
+            alertFontTryAgainColor = R.color.your_color,                                            
+            alertBackgroundColor = R.color.your_color                                               
+        )                                                                                           
+        .userInterfaceTexts(                                                                        
+            faceNotInside = "Face is not inside",                                                   
+            faceNotStraight = "Face is not straight",                                               
+            faceIsTooFar = "Face is too far",                                                       
+            holdPhoneVertically = "Hold phone as vertical",                                         
+            alertTitle = "Verification Failed",                                                     
+            alertDescription = "Verification is failed, please try again.",                         
+            alertTryAgain = "Try again",                                                            
+            turnDown = "Turn your head down",                                                       
+            turnLeft = "Turn your head left",                                                       
+            turnRight = "Turn your head right",                                                     
+            turnUp = "Turn your head up",                                                           
+            faceStraight = "Look as straight position to screen"                                    
+        )                                                                                           
+        .userInterfaceDrawables(                                                                    
+            mainGuideStraight = R.drawable.your_drawable,                                           
+            mainGuideUp = R.drawable.your_drawable,                                                 
+            mainGuideRight = R.drawable.your_drawable,                                              
+            mainGuideLeft = R.drawable.your_drawable,                                               
+            mainGuideDown = R.drawable.your_drawable,                                               
+            secondaryGuideUp = R.drawable.your_drawable,                                            
+            secondaryGuideRight = R.drawable.your_drawable,                                         
+            secondaryGuideDown = R.drawable.your_drawable,                                          
+            secondaryGuideLeft = R.drawable.your_drawable                                           
+        )                                                                                           
+        .userInterfaceVisibilities(                                                                 
+            mainGuideVisibility = true,                                                             
+            secondaryGuideVisibility = true                                                         
+        )                                                                                           
+        .build(this)                                                                                
+                                                                                                    
+ // Navigating the fragment with null check                                                     
+ if(fragment != null) {                                                                             
+     navigatetFragmentMethod(fragment);                                                             
+ }                                                                                                  
+                                                                                                    
+// Creating the observable to observe PoseEstimation events                                     
+private val observable: PoseEstimationObserver = object : PoseEstimationObserver {                  
+    override fun onSuccess(bitmap: Bitmap?) {                                                       
+        bitmap?.let {                                                                               
+            Log.i(TAG, "Verification is success")                                                   
+            uploadSelfie()                                                                          
+        }?: run {                                                                                   
+            Log.e(TAG, "Verification is not success")                                               
+        }                                                                                           
+    }                                                                                               
+                                                                                                    
+    override fun onFailure(reason: OnFailurePoseEstimation, currentAttempt: Int) {              
+        Log.d(TAG, "onFailure: $currentAttempt")                                                    
+    }                                                                                               
+                                                                                                    
+    override fun onError(error: Error) {                                                        
+        Log.e(TAG, "onError: $error" )                                                              
+    }                                                                                               
+}                                                                                                  
 ```
 
 * upload() : Uploads the taken data from SelfiePoseEstimation
@@ -763,28 +785,25 @@ Pose Estimation creates a view that asks the user for random and certain number 
 
 ```kotlin
 //Uploading the current taken Selfie data
-        Amani.sharedInstance()
-            .SelfiePoseEstimation()
-            .upload(
-                this,
-                "type_of_document example: XXX_SE_0",
-                object : IUploadCallBack{
-                    override fun cb(
-                        isSuccess: Boolean,
-                        result: String?,
-                        errors: MutableList<Errors>?
-                    ) {
-                        //isSuccess means the Selfie Data is uploaded
-                        //result is the result of uploaded document it should be equal "OK"
-                        // if the current Selfie has no error
-                        //If Selfie has errors, errors object will not be null anymore
-                    }
-                }
-            )
-
+Amani.sharedInstance()                                                                          
+    .SelfiePoseEstimation()                                                                     
+    .upload(                                                                                    
+        this,                                                                                   
+        "type_of_document example: XXX_SE_0",                                                   
+        object : IUploadCallBack{                                                               
+            override fun cb(                                                                    
+                isSuccess: Boolean,                                                             
+                result: String?,                                                                
+                errors: MutableList<Errors>?                                                    
+            ) {                                                                                 
+                //isSuccess means the Selfie Data is uploaded                                   
+                //result is the result of uploaded document it should be equal "OK"             
+                // if the current Selfie has no error                                           
+                //If Selfie has errors, errors object will not be null anymore                  
+            }                                                                                   
+        }                                                                                       
+    )                                                                                           
 ```
-
-
 -----
 
 ## Generic Document
@@ -796,28 +815,25 @@ how many document will be taken from camera.) in it.
 
 * Supported file type list; file.pdf, file.jpg, file.png, file.webp, file.bmp
 
-```java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
-```
-
 * Preparing DocumentBuilder
 
 ``` java
 // Preparing DocumentBuilder for User Interface && Some Logic Operations
- DocBuilder docBuilder = new DocBuilder("Tekrar Dene", // Text label
-                "Onayla", // Text label
-                R.color.color_blue, // Text color
-                R.color.color_blue, // Text color
-                R.color.white, // Button color
-                2); // Indicates the number of documents.
+DocBuilder docBuilder = new DocBuilder("Tekrar Dene", // Text label         
+               "Onayla", // Text label                                      
+               R.color.color_blue, // Text color                            
+               R.color.color_blue, // Text color                            
+               R.color.white, // Button color                               
+               2); // Indicates the number of documents.                    
 ```
 
 * Replacing Fragment and Uploading Data from Camera
 
 ``` java
 //Calling Generic Document Fragment and Uploading Documents (due to lambda function result)
-Fragment docFragment = Amani.sharedInstance().Document().start("DOC_TYPE",docBuilder, frameLayout,(docList,isSucess)->{
+Fragment docFragment = Amani.sharedInstance()
+  .Document()
+  .start("DOC_TYPE",docBuilder, frameLayout,(docList,isSucess)->{
 
             if (isSuccess) {
                 //Uploading Generic Documents that taken from camera
@@ -870,28 +886,26 @@ Amani.sharedInstance().Document().deleteAllDocumentCaches();
   before upload() function called.
 
 ``` java
-//Initiliazing Amani SDK (WARNING! This method must be called at least once before other methods are called in same activity. If you in another acitivity you may need to call it twice.)
-Amani.init(MainActivity.this, "SERVER", "SHARED_SECRET"); // SHARED_SECRET is a Key required to sign Signature for security layer.
-```
-* setInfo() function example usage;
-
-``` java
-Amani.sharedInstance().CustomerInfo().setInfo("Mobile Developer",
-        "İstanbul",
-        "Maslak",
-        "Maslak Mah. ..."
-        );
+Amani.sharedInstance()
+  .CustomerInfo()
+  .setInfo(
+    "Mobile Developer",
+    "İstanbul",
+    "Maslak",
+    "Maslak Mah. ...");
 ```
 * upload() function example usage;
 
 ``` java
-    Amani.sharedInstance().CustomerInfo().upload((isSuccess, result, errors) -> {
-            if (isSuccess) // Uploading CustomerInfo is successfull.
-            if (result.equals("OK")) // Pending review.
-            if (errors != null) if (errors.get(0) != null){
-            // There is an error.
-            }
-            });
+Amani.sharedInstance()
+  .CustomerInfo()
+  .upload((isSuccess, result, errors) -> {               
+        if (isSuccess) // Uploading CustomerInfo is successfull.                            
+        if (result.equals("OK")) // Pending review.                                         
+        if (errors != null) if (errors.get(0) != null){                                     
+        // There is an error.                                                               
+        }                                                                                   
+  });                                                                                 
 ```
 -----
 
@@ -900,14 +914,15 @@ Amani.sharedInstance().CustomerInfo().setInfo("Mobile Developer",
 It is used to get information about the last updated details about the created customer.
 
 ``` java
-  Amani.sharedInstance().CustomerDetail().getCustomerDetail(new CustomerDetailObserver() {
-            @Override
-            public void result(@Nullable ResCustomerDetail customerDetail, @Nullable Throwable throwable) {
-                //customerDetail is fetched if there is no throwable
-            }
-        });
-
-
+Amani.sharedInstance()
+  .CustomerDetail()
+  .getCustomerDetail
+  (new CustomerDetailObserver() {                    
+      @Override                                                                                                  
+      public void result(@Nullable ResCustomerDetail customerDetail, @Nullable Throwable throwable) {       
+          //customerDetail is fetched if there is no throwable                                              
+      }                                                                                                     
+  });                                                                                                   
 ```
 -----
 
@@ -964,30 +979,32 @@ Amani.sharedInstance().Signature().start(this, NUMBER_OF_SIGNATURE_WILL_BE_TAKEN
 * clean() function example usage;
 
 ``` java
-     Amani.sharedInstance().Signature().clean();
+Amani.sharedInstance().Signature().clean();
 ```
 
 * upload() function example usage;
 
 ``` java
-       Amani.sharedInstance().Signature().upload { isSucess: Boolean, result: String?, errors: List<Errors?>? ->
-            Log.d(TAG, "upload isSuccess $isSucess")
-            Log.d(TAG, "upload result $result")
-           if(errors!= null) Log.d(TAG, "upload first error${errors[0]}")
-        }
+Amani.sharedInstance()
+  .Signature()
+  .upload { isSucess: Boolean, result: String?, errors: List<Errors?>? ->       
+     Log.d(TAG, "upload isSuccess $isSucess")                                                                   
+     Log.d(TAG, "upload result $result")                                                                        
+    if(errors!= null) Log.d(TAG, "upload first error${errors[0]}")                                              
+ }                                                                                                              
 ```
 
 
 * confirm() function example usage;
 
 ``` java
-    Amani.sharedInstance().Signature().confirm(context);
+Amani.sharedInstance().Signature().confirm(context);
 ```
 
 * resetCountOfSignature() function example usage;
 
 ``` java
-    Amani.sharedInstance().Signature().resetCountOfSignature();
+Amani.sharedInstance().Signature().resetCountOfSignature();
 ```
 -----
 
@@ -1024,12 +1041,13 @@ Amani.sharedInstance().ScanNFC().start(tag, getApplicationContext(),
 (bitmap, isSuccess, exception) -> {if (isSuccess) {//ScanNFC Scan is success! }); }
 ```
 
-//Uploading NFC datas
-
 ```java
-Amani.sharedInstance().ScanNFC().upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) ->
-{
-} ); // It must call if ScanNFC is success.
+Amani.sharedInstance()
+    .ScanNFC()
+    .upload(this,"DOCUMENT TYPE", (uploadNFCSuccess, resultNFC, errors) ->
+    {
+        
+    }); // It must call if ScanNFC is success.
 ```
 -----
 
