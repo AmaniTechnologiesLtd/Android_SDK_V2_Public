@@ -261,7 +261,7 @@ Amani.sharedInstance()
 
 ## BIO Login
 
-### Manual Selfie Capture
+### Manual Selfie Capture Login
 
 It includes the Fragment that allows the selfie to be taken manually from the user with the help of a button. The difference from Auto Selfie is that there is no button in Auto Selfie Capture and the selfie is taken automatically.
 
@@ -298,7 +298,7 @@ fragment?.let {
 
 ```
 
-### Auto Selfie Capture
+### Auto Selfie Capture Login
 
 Auto Selfie Capture provides you with UI fragment configurations that allow the user's Selfie to be taken automatically, and tracking the result of the Selfie with upload operations. In Auto Selfie Capture, if the selfie cannot be taken after the desired time, it offers fallback with the possibility of capturing with the manual button. The sharp difference between AutoSelfieCapture and ManualSelfieCapture is that it provides real-time tracking of faces on the screen. At the same time, it checks that the face is in the desired dimensions and distance.
 
@@ -352,7 +352,7 @@ fragment?.let {
 }                                                                                                                    
 ```
 
-### Selfie Pose Estimation
+### Selfie Pose Estimation Login
 
 The Selfie Pose Estimation module provides you with the UI fragment configurations that allow the user's Selfie to be taken automatically as a result of the successful instructions from the user, and the upload operations and the result of the Selfie to be followed.
 
