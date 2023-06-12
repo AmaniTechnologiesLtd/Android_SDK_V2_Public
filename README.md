@@ -131,7 +131,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.5.2'
+implementation 'ai.amani.android:AmaniAi:2.5.6'
 ```
 
 ### Example of usage:
@@ -139,7 +139,7 @@ implementation 'ai.amani.android:AmaniAi:2.5.2'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.5.2' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.5.6' // Add only this line
 ...
 }
 ```
