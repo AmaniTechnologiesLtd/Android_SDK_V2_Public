@@ -83,3 +83,4 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+AmaniSDK/src/main/java/com/amani/sdk/SANDBOX.kt

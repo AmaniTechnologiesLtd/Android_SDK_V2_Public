@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amani.sdk.SANDBOX;
 import com.amani.sdk.base.AppConstants;
 import com.amani.sdk.base.cb.CallBack;
 import com.amani.sdk.base.cb.CallBackMessages;
@@ -85,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(AppConstants.DOC_NO, "yyMMdd");
             intent.putExtra(AppConstants.ID_NO, idNoS);
             //If you use TOKEN, you do not need to enter EMAIL and PASSWORD.
-            intent.putExtra(AppConstants.TOKEN, "");
+            //intent.putExtra(AppConstants.TOKEN, "");
 
-            intent.putExtra(AppConstants.EMAIL, "MAIL" );
-            intent.putExtra(AppConstants.PASSWORD, "PASSWORD");
+            intent.putExtra(AppConstants.EMAIL, SANDBOX.EMAIL );
+            intent.putExtra(AppConstants.PASSWORD, SANDBOX.PASSWORD);
 
             startActivity(intent);
         });

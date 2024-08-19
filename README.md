@@ -7,6 +7,7 @@
 - [Basics](#basics)
     - [General Requirements](#general-requirements)
     - [App Permissions](#app-permissions)
+    - [Gradle Properties](#gradle-properties)
     - [ProGuard Rule Usage](#proguard-rule-usage)
 - [Integration](#integration)
 - [Amani SDK Usage](#amani-sdk-usage)
@@ -95,6 +96,15 @@ application's Manifest file:
 <uses-permission android:name="android.permission.NFC" />
 ```
 
+## Gradle Properties
+
+Disable R8 full mode, use AndroidX and enable Jetifier like below;
+
+   ```properties
+    android.enableR8.fullMode=false
+    android.useAndroidX=true
+    android.enableJetifier=true
+ ```
 
 ## ProGuard Rule Usage ##
 
@@ -124,6 +134,13 @@ application's Manifest file:
 -dontwarn org.tensorflow.lite.**
 -keep class org.tensorflow.lite.support**{ *; }
 -dontwarn org.tensorflow.lite.support**
+
+-dontwarn org.conscrypt.Conscrypt$Version
+-dontwarn org.conscrypt.Conscrypt
+-dontwarn org.conscrypt.ConscryptHostnameVerifier
+-dontwarn org.openjsse.javax.net.ssl.SSLParameters
+-dontwarn org.openjsse.javax.net.ssl.SSLSocket
+-dontwarn org.openjsse.net.ssl.OpenJSSE
    ```
 
 ## Integration
@@ -133,7 +150,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.5.6'
+implementation 'ai.amani.android:AmaniAi:2.6.0'
 ```
 
 ### Example of usage:
@@ -141,7 +158,7 @@ implementation 'ai.amani.android:AmaniAi:2.5.6'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.5.6' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.6.0' // Add only this line
 ...
 }
 ```

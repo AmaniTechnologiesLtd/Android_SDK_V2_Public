@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.amani.sdk">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.NFC" />
 
     <application
@@ -16,6 +15,7 @@
         android:name="com.amani.sdk.base.BaseService"
         android:theme="@style/Theme.AmaniSDK">
         <activity android:name="com.amani.sdk.ui.activity.NFCScanActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
             >
         </activity>
