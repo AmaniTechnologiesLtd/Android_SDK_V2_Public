@@ -74,7 +74,7 @@ filling the all the information to get your physical contract verified.
 The minimum requirements for the SDK are:
 
 * API Level 21
-* compileSdkVersion 33
+* compileSdkVersion 34
 
 ## App Permissions
 
