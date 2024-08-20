@@ -6,6 +6,7 @@
 - [Overview](#overview)
 - [Basics](#basics)
     - [General Requirements](#general-requirements)
+    - [Compile Options](#compile-options)
     - [App Permissions](#app-permissions)
     - [Gradle Properties](#gradle-properties)
     - [ProGuard Rule Usage](#proguard-rule-usage)
@@ -75,6 +76,15 @@ The minimum requirements for the SDK are:
 
 * API Level 21
 * compileSdkVersion 34
+
+## Compile Options
+
+```groovy
+  compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+```
 
 ## App Permissions
 
