@@ -160,7 +160,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.6.0'
+implementation 'ai.amani.android:AmaniAi:2.6.2'
 ```
 
 ### Example of usage:
@@ -168,7 +168,7 @@ implementation 'ai.amani.android:AmaniAi:2.6.0'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.6.0' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.6.2' // Add only this line
 ...
 }
 ```
@@ -362,7 +362,7 @@ val fragment = Amani.sharedInstance()
         faceIsTooFarText = "Face is too far",                                                                        
         holdStableText = "Hold stable text",                                                                         
         faceNotFoundText = "Face not found text"                                                                     
-    )                                                                                                                
+    )
     .observer(object : AutoSelfieCaptureObserver {                                                                   
         override fun cb(bitmap: Bitmap?) {                                                                           
                                                                                                              
@@ -447,7 +447,7 @@ val fragment: Fragment? = Amani.sharedInstance()
     .userInterfaceVisibilities(                                                                                 
         mainGuideVisibility = true,                                                                             
         secondaryGuideVisibility = true                                                                         
-    )                                                                                                           
+    )
     .observer(object : PoseEstimationObserver{                                                                  
        override fun onSuccess(bitmap: Bitmap?) {                                                                
            if (bitmap != null) {                                                                                
@@ -524,6 +524,20 @@ The IDCapture module offers you the opportunity to automatically capture the doc
 ``` kotlin
         val fragment: Fragment? = Amani.sharedInstance()
         .IDCapture()
+        .onException(onException = object : ExceptionCallBack{
+            override fun onException(exception: Exception) {
+                /**
+                 * Triggering this block indicates that there is a non-fatal error caught in the
+                 * fragment that will not crash your application.
+                 *
+                 * In such cases, you can log the error to your crash service to report it to
+                 * the Amani Mobile team later.
+                 *
+                 * Then, you can send a message to the user informing them of the error and
+                 * remove the fragment from the back stack with your fragment manager.
+                 */
+            }
+        })
         .start(
             this, //Context of the Application
             frameLayout, //FrameLayout where the current IDCapture fragment will be fit in
@@ -597,7 +611,21 @@ It includes the Fragment that allows the selfie to be taken manually from the us
 ```kotlin
 //Getting the Fragment view of Selfie                                                           
  val fragment = Amani.sharedInstance()                                                              
-        .Selfie()                                                                                   
+        .Selfie()
+        .onException(onException = object : ExceptionCallBack{
+            override fun onException(exception: Exception) {
+                /**
+                 * Triggering this block indicates that there is a non-fatal error caught in the
+                 * fragment that will not crash your application.
+                 *
+                 * In such cases, you can log the error to your crash service to report it to
+                 * the Amani Mobile team later.
+                 *
+                 * Then, you can send a message to the user informing them of the error and
+                 * remove the fragment from the back stack with your fragment manager.
+                 */
+            }
+        })
         .start(                                                                                     
             "type_of_document example: XXX_SE_0",                                                   
             object : IFragmentCallBack{                                                             
@@ -677,7 +705,21 @@ aaptOptions {
 
 //Getting the view of related Fragment
 Amani.sharedInstance()                                                                              
-        .AutoSelfieCapture()                                                                        
+        .AutoSelfieCapture()
+        .onException(onException = object : ExceptionCallBack{
+            override fun onException(exception: Exception) {
+                /**
+                 * Triggering this block indicates that there is a non-fatal error caught in the
+                 * fragment that will not crash your application.
+                 *
+                 * In such cases, you can log the error to your crash service to report it to
+                 * the Amani Mobile team later.
+                 *
+                 * Then, you can send a message to the user informing them of the error and
+                 * remove the fragment from the back stack with your fragment manager.
+                 */
+            }
+        })
         .start(                                                                                     
             docType = "type_of_document example: XXX_SE_0",                                         
             ascBuilder = ascBuilder,                                                                
@@ -783,7 +825,21 @@ val fragment = Amani.sharedInstance().SelfiePoseEstimation()
         .userInterfaceVisibilities(                                                                 
             mainGuideVisibility = true,                                                             
             secondaryGuideVisibility = true                                                         
-        )                                                                                           
+        )
+        .onException(onException = object : ExceptionCallBack{
+            override fun onException(exception: Exception) {
+                /**
+                 * Triggering this block indicates that there is a non-fatal error caught in the
+                 * fragment that will not crash your application.
+                 *
+                 * In such cases, you can log the error to your crash service to report it to
+                 * the Amani Mobile team later.
+                 *
+                 * Then, you can send a message to the user informing them of the error and
+                 * remove the fragment from the back stack with your fragment manager.
+                 */
+            }
+        })                                                                                                                                                                                     
         .build(this)                                                                                
                                                                                                     
  // Navigating the fragment with null check                                                     
