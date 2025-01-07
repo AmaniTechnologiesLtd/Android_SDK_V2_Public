@@ -160,7 +160,7 @@ Dependencies:Dependencies:
 1. Add the following dependencies to your Module build.gradle file.
 
 ```groovy
-implementation 'ai.amani.android:AmaniAi:2.6.4'
+implementation 'ai.amani.android:AmaniAi:2.6.5'
 ```
 
 ### Example of usage:
@@ -168,7 +168,7 @@ implementation 'ai.amani.android:AmaniAi:2.6.4'
 ```groovy
 dependencies {
 ...
-implementation 'ai.amani.android:AmaniAi:2.6.4' // Add only this line
+implementation 'ai.amani.android:AmaniAi:2.6.5' // Add only this line
 ...
 }
 ```
